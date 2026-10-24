@@ -71,7 +71,7 @@ def set_lang(code):
 
 
 APP_ID = "Screenshoter"
-VERSION = "5.4"
+VERSION = "5.5"
 
 # ----------------------------------------------------------------- оформление
 BG = "#191c38"        # панель
@@ -105,7 +105,7 @@ PALETTE = ["#ff2d2d", "#ff8a00", "#ffd400", "#22c55e", "#1e90ff",
 DEFAULTS = {"tool": "pen", "color": "#ff2d2d", "width": 4,
             "ratio": "Свободно", "last_dir": "", "cursor": True,
             "collage_ratio": "Авто", "collage_cols": 0,
-            "fmt": "PNG", "quality": 90, "dim": 50, "alpha": 100, "late_capture": False, "bar2": False, "sel": None, "sel_wh": None}
+            "fmt": "PNG", "quality": 90, "dim": 50, "alpha": 100, "late_capture": True, "bar2": False, "sel": None, "sel_wh": None}
 
 FORMATS = ["PNG", "JPG", "WEBP", "BMP"]
 FMT_EXT = {"PNG": ".png", "JPG": ".jpg", "WEBP": ".webp", "BMP": ".bmp"}
@@ -3021,7 +3021,12 @@ class Overlay:
             region = tuple(int(v) for v in self.sel) if self.sel else None
         else:                                                # «снимок при сохранении»: можно выделять и двигать рамку
             want = True
-            region = None if (self.sel is None or self.tool in (None, "select")) else tuple(int(v) for v in self.sel)
+            if self.sel is None or self.tool == "select":
+                region = None            # нужна вся поверхность: выделить новую область или двигать рамку
+            else:                        # инструмент не выбран или рисуем: ловим мышь только у рамки (+ручки),
+                x0, y0, x1, y1 = [int(v) for v in self.sel]      # всё остальное — живой экран, клики идут в программы
+                p = 14
+                region = (max(0, x0 - p), max(0, y0 - p), min(self.W, x1 + p), min(self.H, y1 + p))
         key = (region, want)
         if getattr(self, "catch", None) is not None and key == self._catch_key:
             return
