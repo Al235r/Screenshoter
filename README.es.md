@@ -1,8 +1,8 @@
 # Screenshoter
 
-[Русский](README.md) · [English](README.en.md) · **Español** · [Deutsch](README.de.md) · [Français](README.fr.md) · [Português](README.pt.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+[English](README.md) · [Русский](README.ru.md) · **Español** · [Deutsch](README.de.md) · [Français](README.fr.md) · [Português](README.pt.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md)
 
-**Screenshoter** es una herramienta rápida de capturas de pantalla para Windows al estilo de Lightshot: pulse **PrtScn**, seleccione un área, dibuje encima flechas, marcos y notas, y guarde o copie. Interfaz oscura moderna, funciona desde la bandeja del sistema. La interfaz está disponible en 8 idiomas.
+**Screenshoter** es una herramienta rápida de capturas de pantalla para Windows al estilo de Lightshot: pulse **PrtScn**, seleccione un área, dibuje encima flechas, marcos y notas, y guarde o copie. Interfaz oscura moderna, funciona desde la bandeja del sistema. La interfaz está disponible en 10 idiomas.
 
 ![Editor de capturas](images/es/editor.png)
 
@@ -16,7 +16,19 @@
 - **Captura al guardar**: la pantalla no se congela, el vídeo sigue reproduciéndose y la imagen se toma al guardar.
 - **Collage**: modo en vivo, fotogramas con el título «Captura N», bordes negros y atenuación fuera del marco.
 - Varios monitores y escalado de Windows del 125 al 200 %.
-- **8 idiomas de interfaz**: Русский, English, Español, Deutsch, Français, Português, 中文, 日本語 (se elige en Ajustes).
+- **10 idiomas de interfaz**: Русский, English, Español, Deutsch, Français, Português, 中文, 日本語, हिन्दी, العربية (se elige en Ajustes).
+
+## Modo collage
+
+Reúna varias partes de la pantalla en **una sola hoja**: para un tutorial, un informe de errores, una comparación antes/después o una publicación. La pantalla sigue activa mientras trabaja, así que puede desplazar una página o reproducir un vídeo y seguir capturando.
+
+![Ventana del collage](images/es/collage.png)
+
+1. Abra una captura (**PrtScn**), seleccione un área y pulse el botón de **collage** de la barra. La pantalla no se congela: sigue en vivo.
+2. Mueva o redimensione el marco y pulse el botón de **fotograma** (o **PrtScn** / **Enter**) para capturar el área. Repita las veces que necesite.
+3. La ventana del collage reúne los fotogramas en una cuadrícula, cada uno con el título «Captura N» y separados por bordes negros. Elija la **proporción de celda** (auto, 1:1, 16:9, personalizada…) y el **número de columnas**.
+4. **Guarde** la hoja (PNG, JPG, WEBP, BMP), **Guardar como…**, **cópiela** al portapapeles, deshaga el último fotograma, borre todo o minimice la ventana y siga capturando.
+5. Salir del modo collage con su botón descarta los fotogramas capturados.
 
 ## Interfaz
 

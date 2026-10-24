@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""Переводы интерфейса. Ключ — русский текст; языки: en, es, de, fr, pt, zh, ja."""
+"""Переводы интерфейса. Ключ — русский текст; языки: en, es, de, fr, pt, zh, ja, hi, ar."""
 
-LANGUAGES = {"ru": "Русский", "en": "English", "es": "Español", "de": "Deutsch", "fr": "Français", "pt": "Português", "zh": "中文", "ja": "日本語"}
+LANGUAGES = {"ru": "Русский", "en": "English", "es": "Español", "de": "Deutsch", "fr": "Français", "pt": "Português", "zh": "中文", "ja": "日本語", "hi": "हिन्दी", "ar": "العربية"}
 NAME_BY_LANG = {"ru": "Скриншотер"}
 
 TRANSLATIONS = {
@@ -13,6 +13,8 @@ TRANSLATIONS = {
         "pt": "A cópia para a área de transferência só está disponível no Windows",
         "zh": "仅 Windows 支持复制到剪贴板",
         "ja": "クリップボードへのコピーは Windows のみ対応です",
+        "hi": "क्लिपबोर्ड पर कॉपी करना केवल Windows में उपलब्ध है",
+        "ar": "النسخ إلى الحافظة متاح في Windows فقط",
     },
     "не удалось положить данные в буфер обмена": {
         "en": "could not put the data on the clipboard",
@@ -22,6 +24,8 @@ TRANSLATIONS = {
         "pt": "não foi possível colocar os dados na área de transferência",
         "zh": "无法将数据放入剪贴板",
         "ja": "クリップボードにデータを書き込めませんでした",
+        "hi": "डेटा को क्लिपबोर्ड पर नहीं रखा जा सका",
+        "ar": "تعذّر وضع البيانات في الحافظة",
     },
     "Буфер обмена занят другой программой": {
         "en": "The clipboard is in use by another program",
@@ -31,6 +35,8 @@ TRANSLATIONS = {
         "pt": "A área de transferência está em uso por outro programa",
         "zh": "剪贴板被其他程序占用",
         "ja": "クリップボードが他のプログラムで使用中です",
+        "hi": "क्लिपबोर्ड किसी अन्य प्रोग्राम द्वारा उपयोग में है",
+        "ar": "الحافظة مستخدمة من برنامج آخر",
     },
     "Буфер обмена недоступен": {
         "en": "The clipboard is unavailable",
@@ -40,6 +46,8 @@ TRANSLATIONS = {
         "pt": "A área de transferência está indisponível",
         "zh": "剪贴板不可用",
         "ja": "クリップボードを利用できません",
+        "hi": "क्लिपबोर्ड उपलब्ध नहीं है",
+        "ar": "الحافظة غير متاحة",
     },
     "Скриншот {n}": {
         "en": "Screenshot {n}",
@@ -49,6 +57,8 @@ TRANSLATIONS = {
         "pt": "Captura {n}",
         "zh": "截图 {n}",
         "ja": "スクリーンショット {n}",
+        "hi": "स्क्रीनशॉट {n}",
+        "ar": "لقطة شاشة {n}",
     },
     "Сохранить коллаж как": {
         "en": "Save collage as",
@@ -58,6 +68,8 @@ TRANSLATIONS = {
         "pt": "Salvar colagem como",
         "zh": "将拼图另存为",
         "ja": "コラージュを名前を付けて保存",
+        "hi": "कोलाज को इस नाम से सहेजें",
+        "ar": "حفظ الكولاج باسم",
     },
     "Коллаж": {
         "en": "Collage",
@@ -67,6 +79,8 @@ TRANSLATIONS = {
         "pt": "Colagem",
         "zh": "拼图",
         "ja": "コラージュ",
+        "hi": "कोलाज",
+        "ar": "كولاج",
     },
     "коллаж": {
         "en": "collage",
@@ -76,6 +90,8 @@ TRANSLATIONS = {
         "pt": "colagem",
         "zh": "拼图",
         "ja": "コラージュ",
+        "hi": "कोलाज",
+        "ar": "كولاج",
     },
     "Пропорции ячейки": {
         "en": "Cell proportions",
@@ -85,6 +101,8 @@ TRANSLATIONS = {
         "pt": "Proporções da célula",
         "zh": "单元格比例",
         "ja": "セルの比率",
+        "hi": "सेल का अनुपात",
+        "ar": "نسبة الخلية",
     },
     "Число колонок": {
         "en": "Number of columns",
@@ -94,6 +112,8 @@ TRANSLATIONS = {
         "pt": "Número de colunas",
         "zh": "列数",
         "ja": "列の数",
+        "hi": "स्तंभों की संख्या",
+        "ar": "عدد الأعمدة",
     },
     "Убрать последний кадр": {
         "en": "Remove last frame",
@@ -103,6 +123,8 @@ TRANSLATIONS = {
         "pt": "Remover o último quadro",
         "zh": "删除最后一帧",
         "ja": "最後のフレームを削除",
+        "hi": "अंतिम फ़्रेम हटाएँ",
+        "ar": "إزالة آخر إطار",
     },
     "Очистить коллаж": {
         "en": "Clear collage",
@@ -112,6 +134,8 @@ TRANSLATIONS = {
         "pt": "Limpar colagem",
         "zh": "清空拼图",
         "ja": "コラージュをクリア",
+        "hi": "कोलाज साफ़ करें",
+        "ar": "مسح الكولاج",
     },
     "Копировать коллаж в буфер обмена": {
         "en": "Copy collage to clipboard",
@@ -121,6 +145,8 @@ TRANSLATIONS = {
         "pt": "Copiar colagem para a área de transferência",
         "zh": "将拼图复制到剪贴板",
         "ja": "コラージュをクリップボードにコピー",
+        "hi": "कोलाज को क्लिपबोर्ड पर कॉपी करें",
+        "ar": "نسخ الكولاج إلى الحافظة",
     },
     "Сохранить сразу и закрыть": {
         "en": "Save now and close",
@@ -130,6 +156,8 @@ TRANSLATIONS = {
         "pt": "Salvar agora e fechar",
         "zh": "立即保存并关闭",
         "ja": "すぐに保存して閉じる",
+        "hi": "अभी सहेजें और बंद करें",
+        "ar": "حفظ الآن وإغلاق",
     },
     "Сохранить как… и закрыть": {
         "en": "Save as… and close",
@@ -139,6 +167,8 @@ TRANSLATIONS = {
         "pt": "Salvar como… e fechar",
         "zh": "另存为…并关闭",
         "ja": "名前を付けて保存して閉じる",
+        "hi": "इस नाम से सहेजें… और बंद करें",
+        "ar": "حفظ باسم… وإغلاق",
     },
     "Свернуть окно (кадры сохраняются)": {
         "en": "Minimize window (frames are kept)",
@@ -148,6 +178,8 @@ TRANSLATIONS = {
         "pt": "Minimizar janela (os quadros são mantidos)",
         "zh": "最小化窗口（帧会保留）",
         "ja": "ウィンドウを最小化（フレームは保持されます）",
+        "hi": "विंडो छोटी करें (फ़्रेम सुरक्षित रहते हैं)",
+        "ar": "تصغير النافذة (تبقى الإطارات محفوظة)",
     },
     "Авто (как первый кадр)": {
         "en": "Auto (like the first frame)",
@@ -157,6 +189,8 @@ TRANSLATIONS = {
         "pt": "Auto (como o primeiro quadro)",
         "zh": "自动（与第一帧相同）",
         "ja": "自動（最初のフレームに合わせる）",
+        "hi": "स्वतः (पहले फ़्रेम जैसा)",
+        "ar": "تلقائي (مثل الإطار الأول)",
     },
     "Своё…": {
         "en": "Custom…",
@@ -166,6 +200,8 @@ TRANSLATIONS = {
         "pt": "Personalizado…",
         "zh": "自定义…",
         "ja": "カスタム…",
+        "hi": "कस्टम…",
+        "ar": "مخصّص…",
     },
     "Колонок: авто": {
         "en": "Columns: auto",
@@ -175,6 +211,8 @@ TRANSLATIONS = {
         "pt": "Colunas: auto",
         "zh": "列数：自动",
         "ja": "列：自動",
+        "hi": "स्तंभ: स्वतः",
+        "ar": "الأعمدة: تلقائي",
     },
     "Колонок: {n}": {
         "en": "Columns: {n}",
@@ -184,6 +222,8 @@ TRANSLATIONS = {
         "pt": "Colunas: {n}",
         "zh": "列数：{n}",
         "ja": "列：{n}",
+        "hi": "स्तंभ: {n}",
+        "ar": "الأعمدة: {n}",
     },
     "Пропорции ячейки (например 21:9 или 1.91:1):": {
         "en": "Cell proportions (e.g. 21:9 or 1.91:1):",
@@ -193,6 +233,8 @@ TRANSLATIONS = {
         "pt": "Proporções da célula (por exemplo, 21:9 ou 1.91:1):",
         "zh": "单元格比例（例如 21:9 或 1.91:1）：",
         "ja": "セルの比率（例：21:9 または 1.91:1）：",
+        "hi": "सेल का अनुपात (उदा. 21:9 या 1.91:1):",
+        "ar": "نسبة الخلية (مثل 21:9 أو 1.91:1):",
     },
     "Не понял формат. Примеры: 21:9, 1.91:1": {
         "en": "Unrecognized format. Examples: 21:9, 1.91:1",
@@ -202,6 +244,8 @@ TRANSLATIONS = {
         "pt": "Formato não reconhecido. Exemplos: 21:9, 1.91:1",
         "zh": "无法识别的格式。示例：21:9、1.91:1",
         "ja": "形式を認識できません。例：21:9、1.91:1",
+        "hi": "प्रारूप समझ नहीं आया। उदाहरण: 21:9, 1.91:1",
+        "ar": "الصيغة غير معروفة. أمثلة: 21:9، 1.91:1",
     },
     "Кадров нет: PrtScn → выделить → «в коллаж»": {
         "en": "No frames yet: PrtScn → select → “to collage”",
@@ -211,6 +255,8 @@ TRANSLATIONS = {
         "pt": "Ainda não há quadros: PrtScn → selecionar → “para a colagem”",
         "zh": "暂无帧：PrtScn → 选择区域 → “加入拼图”",
         "ja": "フレームがありません：PrtScn → 範囲を選択 →「コラージュへ」",
+        "hi": "अभी कोई फ़्रेम नहीं: PrtScn → क्षेत्र चुनें → “कोलाज में”",
+        "ar": "لا توجد إطارات: PrtScn ← حدّد منطقة ← «إلى الكولاج»",
     },
     "Кадров: {n}   Лист: {w}×{h}": {
         "en": "Frames: {n}   Sheet: {w}×{h}",
@@ -220,6 +266,8 @@ TRANSLATIONS = {
         "pt": "Quadros: {n}   Folha: {w}×{h}",
         "zh": "帧数：{n}   图幅：{w}×{h}",
         "ja": "フレーム：{n}   シート：{w}×{h}",
+        "hi": "फ़्रेम: {n}   शीट: {w}×{h}",
+        "ar": "الإطارات: {n}   الورقة: {w}×{h}",
     },
     "Не удалось скопировать: {e}": {
         "en": "Could not copy: {e}",
@@ -229,6 +277,8 @@ TRANSLATIONS = {
         "pt": "Não foi possível copiar: {e}",
         "zh": "无法复制：{e}",
         "ja": "コピーできませんでした：{e}",
+        "hi": "कॉपी नहीं हो सका: {e}",
+        "ar": "تعذّر النسخ: {e}",
     },
     "Не удалось сохранить: {e}": {
         "en": "Could not save: {e}",
@@ -238,6 +288,8 @@ TRANSLATIONS = {
         "pt": "Não foi possível salvar: {e}",
         "zh": "无法保存：{e}",
         "ja": "保存できませんでした：{e}",
+        "hi": "सहेजा नहीं जा सका: {e}",
+        "ar": "تعذّر الحفظ: {e}",
     },
     "Пропорции выделения  (клавиши 0–8)": {
         "en": "Selection proportions  (keys 0–8)",
@@ -247,6 +299,8 @@ TRANSLATIONS = {
         "pt": "Proporções da seleção  (teclas 0–8)",
         "zh": "选区比例  （按键 0–8）",
         "ja": "選択範囲の比率  （キー 0–8）",
+        "hi": "चयन का अनुपात  (कुंजियाँ 0–8)",
+        "ar": "نسبة التحديد  (المفاتيح 0–8)",
     },
     "Фигуры: прямоугольник (R) и круг (O)\nНажмите, чтобы выбрать": {
         "en": "Shapes: rectangle (R) and circle (O)\nClick to choose",
@@ -256,6 +310,8 @@ TRANSLATIONS = {
         "pt": "Formas: retângulo (R) e círculo (O)\nClique para escolher",
         "zh": "形状：矩形 (R) 和圆形 (O)\n点击选择",
         "ja": "図形：四角形 (R) と円 (O)\nクリックして選択",
+        "hi": "आकृतियाँ: आयत (R) और वृत्त (O)\nचुनने के लिए क्लिक करें",
+        "ar": "الأشكال: مستطيل (R) ودائرة (O)\nانقر للاختيار",
     },
     "Отменить  (Ctrl+Z)": {
         "en": "Undo  (Ctrl+Z)",
@@ -265,6 +321,8 @@ TRANSLATIONS = {
         "pt": "Desfazer  (Ctrl+Z)",
         "zh": "撤销  (Ctrl+Z)",
         "ja": "元に戻す  (Ctrl+Z)",
+        "hi": "पूर्ववत करें  (Ctrl+Z)",
+        "ar": "تراجع  (Ctrl+Z)",
     },
     "Повторить  (Ctrl+Y)": {
         "en": "Redo  (Ctrl+Y)",
@@ -274,6 +332,8 @@ TRANSLATIONS = {
         "pt": "Refazer  (Ctrl+Y)",
         "zh": "重做  (Ctrl+Y)",
         "ja": "やり直し  (Ctrl+Y)",
+        "hi": "फिर से करें  (Ctrl+Y)",
+        "ar": "إعادة  (Ctrl+Y)",
     },
     "Показывать курсор мыши на снимке\n(вкл — курсор виден в итоговой картинке)": {
         "en": "Show the mouse cursor in the screenshot\n(on — the cursor is visible in the final image)",
@@ -283,6 +343,8 @@ TRANSLATIONS = {
         "pt": "Mostrar o cursor do mouse na captura\n(ativado: o cursor aparece na imagem final)",
         "zh": "在截图中显示鼠标光标\n（开启后光标会出现在最终图片中）",
         "ja": "スクリーンショットにマウスカーソルを表示\n（オンにすると最終画像にカーソルが写ります）",
+        "hi": "स्क्रीनशॉट में माउस कर्सर दिखाएँ\n(चालू होने पर कर्सर अंतिम चित्र में दिखता है)",
+        "ar": "إظهار مؤشر الفأرة في لقطة الشاشة\n(عند التفعيل يظهر المؤشر في الصورة النهائية)",
     },
     "Снять кадр в рамке и добавить в коллаж  (PrtScn)\nЭкран не замораживается: можно смотреть видео и снимать подряд": {
         "en": "Capture a frame in the selection and add it to the collage  (PrtScn)\nThe screen is not frozen: you can watch video and capture continuously",
@@ -292,6 +354,8 @@ TRANSLATIONS = {
         "pt": "Capturar um quadro na moldura e adicioná-lo à colagem  (PrtScn)\nA tela não congela: é possível assistir a vídeos e capturar continuamente",
         "zh": "截取框内画面并加入拼图  (PrtScn)\n屏幕不会冻结：可以边看视频边连续截图",
         "ja": "枠内のフレームを撮影してコラージュに追加  (PrtScn)\n画面は固まりません：動画を見ながら連続で撮影できます",
+        "hi": "फ़्रेम में दिख रहा हिस्सा कैप्चर करके कोलाज में जोड़ें  (PrtScn)\nस्क्रीन जमती नहीं: आप वीडियो देखते हुए लगातार कैप्चर कर सकते हैं",
+        "ar": "التقاط إطار من المنطقة وإضافته إلى الكولاج  (PrtScn)\nالشاشة لا تتجمّد: يمكنك مشاهدة الفيديو والتقاط الصور بشكل متواصل",
     },
     "Сохранить сразу в папку скриншотов и закрыть  (Ctrl+S)": {
         "en": "Save straight to the screenshots folder and close  (Ctrl+S)",
@@ -301,6 +365,8 @@ TRANSLATIONS = {
         "pt": "Salvar direto na pasta de capturas e fechar  (Ctrl+S)",
         "zh": "直接保存到截图文件夹并关闭  (Ctrl+S)",
         "ja": "スクリーンショットのフォルダーにすぐ保存して閉じる  (Ctrl+S)",
+        "hi": "सीधे स्क्रीनशॉट फ़ोल्डर में सहेजें और बंद करें  (Ctrl+S)",
+        "ar": "الحفظ مباشرة في مجلد لقطات الشاشة وإغلاق  (Ctrl+S)",
     },
     "Сохранить как… (выбрать папку и имя) и закрыть  (Ctrl+Shift+S)": {
         "en": "Save as… (choose folder and name) and close  (Ctrl+Shift+S)",
@@ -310,6 +376,8 @@ TRANSLATIONS = {
         "pt": "Salvar como… (escolher pasta e nome) e fechar  (Ctrl+Shift+S)",
         "zh": "另存为…（选择文件夹和名称）并关闭  (Ctrl+Shift+S)",
         "ja": "名前を付けて保存（フォルダーと名前を選択）して閉じる  (Ctrl+Shift+S)",
+        "hi": "इस नाम से सहेजें… (फ़ोल्डर और नाम चुनें) और बंद करें  (Ctrl+Shift+S)",
+        "ar": "حفظ باسم… (اختيار المجلد والاسم) وإغلاق  (Ctrl+Shift+S)",
     },
     "Закрыть  (Esc)": {
         "en": "Close  (Esc)",
@@ -319,6 +387,8 @@ TRANSLATIONS = {
         "pt": "Fechar  (Esc)",
         "zh": "关闭  (Esc)",
         "ja": "閉じる  (Esc)",
+        "hi": "बंद करें  (Esc)",
+        "ar": "إغلاق  (Esc)",
     },
     "Цвет рисования": {
         "en": "Drawing color",
@@ -328,6 +398,8 @@ TRANSLATIONS = {
         "pt": "Cor do desenho",
         "zh": "绘图颜色",
         "ja": "描画色",
+        "hi": "ड्रॉइंग का रंग",
+        "ar": "لون الرسم",
     },
     "Толщина": {
         "en": "Thickness",
@@ -337,6 +409,8 @@ TRANSLATIONS = {
         "pt": "Espessura",
         "zh": "粗细",
         "ja": "太さ",
+        "hi": "मोटाई",
+        "ar": "السماكة",
     },
     "Толщина линии  (колесо мыши, [ и ])": {
         "en": "Line thickness  (mouse wheel, [ and ])",
@@ -346,6 +420,8 @@ TRANSLATIONS = {
         "pt": "Espessura da linha  (roda do mouse, [ e ])",
         "zh": "线条粗细  （鼠标滚轮，[ 和 ]）",
         "ja": "線の太さ  （マウスホイール、[ と ]）",
+        "hi": "रेखा की मोटाई  (माउस व्हील, [ और ])",
+        "ar": "سماكة الخط  (عجلة الفأرة، [ و ])",
     },
     "Скругление": {
         "en": "Rounding",
@@ -355,6 +431,8 @@ TRANSLATIONS = {
         "pt": "Arredondamento",
         "zh": "圆滑",
         "ja": "丸み",
+        "hi": "गोलाई",
+        "ar": "الاستدارة",
     },
     "Скругление, %\n0 — линия как нарисована, 100 — максимальный изгиб:\nуглы и кривые превращаются в ровные дуги\nДля карандаша и прямоугольника  (S — вкл/выкл)": {
         "en": "Rounding, %\n0 — the line stays as drawn, 100 — maximum smoothing:\ncorners and curves become even arcs\nFor the pencil and rectangle  (S — on/off)",
@@ -364,6 +442,8 @@ TRANSLATIONS = {
         "pt": "Arredondamento, %\n0 — a linha fica como desenhada, 100 — suavização máxima:\ncantos e curvas viram arcos uniformes\nPara o lápis e o retângulo  (S — ligar/desligar)",
         "zh": "圆滑度，%\n0 — 保持原样，100 — 最大平滑：\n拐角和曲线变为平滑的圆弧\n适用于铅笔和矩形  （S — 开/关）",
         "ja": "丸み、%\n0 — 描いたまま、100 — 最大の滑らかさ：\n角やカーブがなめらかな円弧になります\n鉛筆と四角形用  （S — オン/オフ）",
+        "hi": "गोलाई, %\n0 — रेखा जैसी खींची वैसी रहती है, 100 — अधिकतम चिकनाई:\nकोने और वक्र समान चापों में बदल जाते हैं\nपेंसिल और आयत के लिए  (S — चालू/बंद)",
+        "ar": "الاستدارة، %\n0 — يبقى الخط كما رُسم، 100 — أقصى تنعيم:\nتتحول الزوايا والمنحنيات إلى أقواس منتظمة\nللقلم والمستطيل  (S — تشغيل/إيقاف)",
     },
     "Горячие клавиши": {
         "en": "Hotkeys",
@@ -373,6 +453,8 @@ TRANSLATIONS = {
         "pt": "Atalhos de teclado",
         "zh": "快捷键",
         "ja": "ショートカットキー",
+        "hi": "शॉर्टकट कुंजियाँ",
+        "ar": "اختصارات لوحة المفاتيح",
     },
     "Год создания: 2026": {
         "en": "Year created: 2026",
@@ -382,6 +464,8 @@ TRANSLATIONS = {
         "pt": "Ano de criação: 2026",
         "zh": "创建年份：2026",
         "ja": "作成年：2026",
+        "hi": "निर्माण वर्ष: 2026",
+        "ar": "سنة الإنشاء: 2026",
     },
     "Разработчик: ": {
         "en": "Developer: ",
@@ -391,6 +475,8 @@ TRANSLATIONS = {
         "pt": "Desenvolvedor: ",
         "zh": "开发者：",
         "ja": "開発者：",
+        "hi": "डेवलपर: ",
+        "ar": "المطوّر: ",
     },
     "Закрыть": {
         "en": "Close",
@@ -400,8 +486,10 @@ TRANSLATIONS = {
         "pt": "Fechar",
         "zh": "关闭",
         "ja": "閉じる",
+        "hi": "बंद करें",
+        "ar": "إغلاق",
     },
-        "Качество изображения": {
+    "Качество изображения": {
         "en": "Image quality",
         "es": "Calidad de imagen",
         "de": "Bildqualität",
@@ -409,6 +497,8 @@ TRANSLATIONS = {
         "pt": "Qualidade da imagem",
         "zh": "图像质量",
         "ja": "画質",
+        "hi": "छवि की गुणवत्ता",
+        "ar": "جودة الصورة",
     },
     "PNG и BMP сохраняются без потерь;\nWebP при 100 — без потерь": {
         "en": "PNG and BMP are saved losslessly;\nWebP at 100 is lossless",
@@ -418,6 +508,8 @@ TRANSLATIONS = {
         "pt": "PNG e BMP são salvos sem perdas;\nWebP em 100 é sem perdas",
         "zh": "PNG 和 BMP 为无损保存；\nWebP 设为 100 时也是无损",
         "ja": "PNG と BMP は劣化なしで保存されます。\nWebP は 100 で劣化なしです",
+        "hi": "PNG और BMP बिना गुणवत्ता खोए सहेजे जाते हैं;\n100 पर WebP भी बिना हानि के होता है",
+        "ar": "يُحفظ PNG وBMP بلا فقدان؛\nوWebP عند 100 بلا فقدان أيضًا",
     },
     "Затемнение области вне рамки, %\n0 — без затемнения": {
         "en": "Dimming outside the frame, %\n0 — no dimming",
@@ -427,6 +519,8 @@ TRANSLATIONS = {
         "pt": "Escurecimento fora da moldura, %\n0 — sem escurecimento",
         "zh": "框外变暗程度，%\n0 — 不变暗",
         "ja": "枠の外側を暗くする量、%\n0 — 暗くしない",
+        "hi": "फ़्रेम के बाहर अंधेरा, %\n0 — अंधेरा नहीं",
+        "ar": "التعتيم خارج الإطار، %\n0 — بدون تعتيم",
     },
     "Горячие клавиши и о программе": {
         "en": "Hotkeys and about",
@@ -436,6 +530,8 @@ TRANSLATIONS = {
         "pt": "Atalhos de teclado e sobre",
         "zh": "快捷键与关于",
         "ja": "ショートカットキーとバージョン情報",
+        "hi": "शॉर्टकट कुंजियाँ और जानकारी",
+        "ar": "الاختصارات وحول البرنامج",
     },
     "Снимок при сохранении: ": {
         "en": "Capture on save: ",
@@ -445,6 +541,8 @@ TRANSLATIONS = {
         "pt": "Captura ao salvar: ",
         "zh": "保存时截图：",
         "ja": "保存時にキャプチャ：",
+        "hi": "सहेजते समय कैप्चर: ",
+        "ar": "الالتقاط عند الحفظ: ",
     },
     "ВКЛ": {
         "en": "ON",
@@ -454,6 +552,8 @@ TRANSLATIONS = {
         "pt": "LIGADO",
         "zh": "开",
         "ja": "オン",
+        "hi": "चालू",
+        "ar": "تشغيل",
     },
     "ВЫКЛ": {
         "en": "OFF",
@@ -463,6 +563,8 @@ TRANSLATIONS = {
         "pt": "DESLIGADO",
         "zh": "关",
         "ja": "オフ",
+        "hi": "बंद",
+        "ar": "إيقاف",
     },
     "\nВкл — после PrtScn экран не замораживается:\nснимок делается в момент нажатия «Сохранить».\nДействует со следующего нажатия PrtScn": {
         "en": "\nOn — after PrtScn the screen is not frozen:\nthe picture is taken when you press “Save”.\nTakes effect from the next PrtScn press",
@@ -472,6 +574,8 @@ TRANSLATIONS = {
         "pt": "\nLigado — após PrtScn a tela não congela:\na captura é feita ao clicar em “Salvar”.\nVale a partir do próximo PrtScn",
         "zh": "\n开启后，按 PrtScn 屏幕不会冻结：\n点击“保存”的瞬间才截图。\n从下一次按 PrtScn 起生效",
         "ja": "\nオンにすると PrtScn 後も画面は固まりません：\n「保存」を押した瞬間に撮影されます。\n次回の PrtScn から有効です",
+        "hi": "\nचालू होने पर PrtScn के बाद स्क्रीन नहीं जमती:\nचित्र “सहेजें” दबाने के क्षण लिया जाता है।\nअगली बार PrtScn दबाने से लागू होगा",
+        "ar": "\nعند التشغيل لا تتجمّد الشاشة بعد PrtScn:\nتُلتقط الصورة لحظة الضغط على «حفظ».\nيسري من الضغطة التالية على PrtScn",
     },
     "Прямоугольник  (R)\nShift — квадрат": {
         "en": "Rectangle  (R)\nShift — square",
@@ -481,6 +585,8 @@ TRANSLATIONS = {
         "pt": "Retângulo  (R)\nShift — quadrado",
         "zh": "矩形  (R)\nShift — 正方形",
         "ja": "四角形  (R)\nShift — 正方形",
+        "hi": "आयत  (R)\nShift — वर्ग",
+        "ar": "مستطيل  (R)\nShift — مربع",
     },
     "Круг / эллипс  (O)\nShift — ровный круг": {
         "en": "Circle / ellipse  (O)\nShift — perfect circle",
@@ -490,6 +596,8 @@ TRANSLATIONS = {
         "pt": "Círculo / elipse  (O)\nShift — círculo perfeito",
         "zh": "圆 / 椭圆  (O)\nShift — 正圆",
         "ja": "円 / 楕円  (O)\nShift — 正円",
+        "hi": "वृत्त / दीर्घवृत्त  (O)\nShift — सटीक वृत्त",
+        "ar": "دائرة / قطع ناقص  (O)\nShift — دائرة مثالية",
     },
     "Прозрачность": {
         "en": "Transparency",
@@ -499,6 +607,8 @@ TRANSLATIONS = {
         "pt": "Transparência",
         "zh": "透明度",
         "ja": "透明度",
+        "hi": "पारदर्शिता",
+        "ar": "الشفافية",
     },
     "Прозрачность рисования, %\n0 — сплошной цвет": {
         "en": "Drawing transparency, %\n0 — solid color",
@@ -508,6 +618,8 @@ TRANSLATIONS = {
         "pt": "Transparência do desenho, %\n0 — cor sólida",
         "zh": "绘图透明度，%\n0 — 实色",
         "ja": "描画の透明度、%\n0 — 不透明",
+        "hi": "ड्रॉइंग की पारदर्शिता, %\n0 — ठोस रंग",
+        "ar": "شفافية الرسم، %\n0 — لون صلب",
     },
     "Свободно": {
         "en": "Free",
@@ -517,6 +629,8 @@ TRANSLATIONS = {
         "pt": "Livre",
         "zh": "自由",
         "ja": "自由",
+        "hi": "मुक्त",
+        "ar": "حر",
     },
     "Своё соотношение (21:9, 1.91:1)\nили точный размер в пикселях (1080x1350)": {
         "en": "Custom ratio (21:9, 1.91:1)\nor an exact size in pixels (1080x1350)",
@@ -526,6 +640,8 @@ TRANSLATIONS = {
         "pt": "Proporção personalizada (21:9, 1.91:1)\nou tamanho exato em pixels (1080x1350)",
         "zh": "自定义比例（21:9、1.91:1）\n或精确的像素尺寸（1080x1350）",
         "ja": "カスタム比率（21:9、1.91:1）\nまたはピクセル単位の正確なサイズ（1080x1350）",
+        "hi": "कस्टम अनुपात (21:9, 1.91:1)\nया पिक्सेल में सटीक आकार (1080x1350)",
+        "ar": "نسبة مخصّصة (21:9، 1.91:1)\nأو حجم دقيق بالبكسل (1080x1350)",
     },
     "Настройки (формат, качество, затемнение, горячие клавиши)": {
         "en": "Settings (format, quality, dimming, hotkeys)",
@@ -535,6 +651,8 @@ TRANSLATIONS = {
         "pt": "Configurações (formato, qualidade, escurecimento, atalhos)",
         "zh": "设置（格式、质量、变暗、快捷键）",
         "ja": "設定（形式、画質、暗さ、ショートカット）",
+        "hi": "सेटिंग्स (प्रारूप, गुणवत्ता, अंधेरा, शॉर्टकट)",
+        "ar": "الإعدادات (الصيغة، الجودة، التعتيم، الاختصارات)",
     },
     ", качество {q}": {
         "en": ", quality {q}",
@@ -544,6 +662,8 @@ TRANSLATIONS = {
         "pt": ", qualidade {q}",
         "zh": "，质量 {q}",
         "ja": "、画質 {q}",
+        "hi": ", गुणवत्ता {q}",
+        "ar": "، الجودة {q}",
     },
     "Скрыть инструменты рисования, цвет, толщину": {
         "en": "Hide drawing tools, color, thickness",
@@ -553,6 +673,8 @@ TRANSLATIONS = {
         "pt": "Ocultar ferramentas de desenho, cor e espessura",
         "zh": "隐藏绘图工具、颜色和粗细",
         "ja": "描画ツール・色・太さを隠す",
+        "hi": "ड्रॉइंग टूल, रंग और मोटाई छिपाएँ",
+        "ar": "إخفاء أدوات الرسم واللون والسماكة",
     },
     "Показать инструменты рисования, цвет, толщину": {
         "en": "Show drawing tools, color, thickness",
@@ -562,6 +684,8 @@ TRANSLATIONS = {
         "pt": "Mostrar ferramentas de desenho, cor e espessura",
         "zh": "显示绘图工具、颜色和粗细",
         "ja": "描画ツール・色・太さを表示",
+        "hi": "ड्रॉइंग टूल, रंग और मोटाई दिखाएँ",
+        "ar": "إظهار أدوات الرسم واللون والسماكة",
     },
     "Кадр коллажа — станет доступен после включения режима коллажа\n(кнопка слева)": {
         "en": "Collage frame — available once collage mode is on\n(button on the left)",
@@ -571,6 +695,8 @@ TRANSLATIONS = {
         "pt": "Quadro da colagem — disponível após ativar o modo colagem\n(botão à esquerda)",
         "zh": "拼图帧 — 开启拼图模式后可用\n（左侧按钮）",
         "ja": "コラージュのフレーム — コラージュモードをオンにすると使えます\n（左のボタン）",
+        "hi": "कोलाज फ़्रेम — कोलाज मोड चालू होने पर उपलब्ध\n(बाईं ओर का बटन)",
+        "ar": "إطار الكولاج — يتوفر بعد تشغيل وضع الكولاج\n(الزر على اليسار)",
     },
     "Режим коллажа включён (кадров: {n})": {
         "en": "Collage mode is on (frames: {n})",
@@ -580,6 +706,8 @@ TRANSLATIONS = {
         "pt": "Modo colagem ativado (quadros: {n})",
         "zh": "拼图模式已开启（帧数：{n}）",
         "ja": "コラージュモード：オン（フレーム数：{n}）",
+        "hi": "कोलाज मोड चालू है (फ़्रेम: {n})",
+        "ar": "وضع الكولاج قيد التشغيل (الإطارات: {n})",
     },
     "Нажмите, чтобы выйти — созданные кадры будут удалены": {
         "en": "Click to exit — the frames you made will be deleted",
@@ -589,6 +717,8 @@ TRANSLATIONS = {
         "pt": "Clique para sair — os quadros criados serão excluídos",
         "zh": "点击退出——已截取的帧将被删除",
         "ja": "クリックで終了 — 作成したフレームは削除されます",
+        "hi": "बाहर निकलने के लिए क्लिक करें — बनाए गए फ़्रेम हटा दिए जाएँगे",
+        "ar": "انقر للخروج — ستُحذف الإطارات التي التقطتها",
     },
     "Режим коллажа: экран оживает, кадры снимаются кнопкой кадра или PrtScn\nКадры собираются на одном листе с подписями «Скриншот 1, 2…»": {
         "en": "Collage mode: the screen comes alive, frames are captured with the frame button or PrtScn\nFrames are assembled on one sheet with captions “Screenshot 1, 2…”",
@@ -598,6 +728,8 @@ TRANSLATIONS = {
         "pt": "Modo colagem: a tela fica ativa, os quadros são capturados com o botão de quadro ou PrtScn\nOs quadros são reunidos em uma folha com as legendas “Captura 1, 2…”",
         "zh": "拼图模式：屏幕保持实时，用帧按钮或 PrtScn 截取帧\n所有帧排在一张图上，并带有“截图 1、2…”标注",
         "ja": "コラージュモード：画面はそのまま動き、フレームボタンまたは PrtScn で撮影します\nフレームは「スクリーンショット 1、2…」のキャプションつきで 1 枚にまとめられます",
+        "hi": "कोलाज मोड: स्क्रीन चलती रहती है, फ़्रेम बटन या PrtScn से कैप्चर होते हैं\nफ़्रेम एक शीट पर “स्क्रीनशॉट 1, 2…” कैप्शन के साथ जुड़ते हैं",
+        "ar": "وضع الكولاج: تبقى الشاشة حيّة، وتُلتقط الإطارات بزر الإطار أو PrtScn\nتُجمع الإطارات في ورقة واحدة بعناوين «لقطة شاشة 1، 2…»",
     },
     "Пропорции: ": {
         "en": "Proportions: ",
@@ -607,6 +739,8 @@ TRANSLATIONS = {
         "pt": "Proporções: ",
         "zh": "比例：",
         "ja": "比率：",
+        "hi": "अनुपात: ",
+        "ar": "النسبة: ",
     },
     "свободные": {
         "en": "free",
@@ -616,6 +750,8 @@ TRANSLATIONS = {
         "pt": "livres",
         "zh": "自由",
         "ja": "自由",
+        "hi": "मुक्त",
+        "ar": "حرة",
     },
     "  (клавиши 0–8)": {
         "en": "  (keys 0–8)",
@@ -625,6 +761,8 @@ TRANSLATIONS = {
         "pt": "  (teclas 0–8)",
         "zh": "  （按键 0–8）",
         "ja": "  （キー 0–8）",
+        "hi": "  (कुंजियाँ 0–8)",
+        "ar": "  (المفاتيح 0–8)",
     },
     "Не понял формат. Примеры: 21:9, 1.91:1, 1080x1350": {
         "en": "Unrecognized format. Examples: 21:9, 1.91:1, 1080x1350",
@@ -634,6 +772,8 @@ TRANSLATIONS = {
         "pt": "Formato não reconhecido. Exemplos: 21:9, 1.91:1, 1080x1350",
         "zh": "无法识别的格式。示例：21:9、1.91:1、1080x1350",
         "ja": "形式を認識できません。例：21:9、1.91:1、1080x1350",
+        "hi": "प्रारूप समझ नहीं आया। उदाहरण: 21:9, 1.91:1, 1080x1350",
+        "ar": "الصيغة غير معروفة. أمثلة: 21:9، 1.91:1، 1080x1350",
     },
     "Соотношение сторон (например 21:9 или 1.91:1)\nили точный размер в пикселях (например 1080x1350):": {
         "en": "Aspect ratio (e.g. 21:9 or 1.91:1)\nor an exact size in pixels (e.g. 1080x1350):",
@@ -643,6 +783,8 @@ TRANSLATIONS = {
         "pt": "Proporção (por exemplo, 21:9 ou 1.91:1)\nou tamanho exato em pixels (por exemplo, 1080x1350):",
         "zh": "宽高比（例如 21:9 或 1.91:1）\n或精确的像素尺寸（例如 1080x1350）：",
         "ja": "縦横比（例：21:9 または 1.91:1）\nまたはピクセル単位のサイズ（例：1080x1350）：",
+        "hi": "आस्पेक्ट रेशियो (उदा. 21:9 या 1.91:1)\nया पिक्सेल में सटीक आकार (उदा. 1080x1350):",
+        "ar": "نسبة العرض إلى الارتفاع (مثل 21:9 أو 1.91:1)\nأو حجم دقيق بالبكسل (مثل 1080x1350):",
     },
     "Скриншот": {
         "en": "Screenshot",
@@ -652,6 +794,8 @@ TRANSLATIONS = {
         "pt": "Captura",
         "zh": "截图",
         "ja": "スクリーンショット",
+        "hi": "स्क्रीनशॉट",
+        "ar": "لقطة شاشة",
     },
     "Сохранить скриншот как": {
         "en": "Save screenshot as",
@@ -661,6 +805,8 @@ TRANSLATIONS = {
         "pt": "Salvar captura como",
         "zh": "将截图另存为",
         "ja": "スクリーンショットを名前を付けて保存",
+        "hi": "स्क्रीनशॉट को इस नाम से सहेजें",
+        "ar": "حفظ لقطة الشاشة باسم",
     },
     "Пропорции ячеек коллажа": {
         "en": "Collage cell proportions",
@@ -670,6 +816,8 @@ TRANSLATIONS = {
         "pt": "Proporções das células da colagem",
         "zh": "拼图单元格比例",
         "ja": "コラージュのセル比率",
+        "hi": "कोलाज सेल का अनुपात",
+        "ar": "نسبة خلايا الكولاج",
     },
     "Сохранить коллаж и закрыть": {
         "en": "Save collage and close",
@@ -679,6 +827,8 @@ TRANSLATIONS = {
         "pt": "Salvar colagem e fechar",
         "zh": "保存拼图并关闭",
         "ja": "コラージュを保存して閉じる",
+        "hi": "कोलाज सहेजें और बंद करें",
+        "ar": "حفظ الكولاج وإغلاق",
     },
     "Сохранить коллаж как… и закрыть": {
         "en": "Save collage as… and close",
@@ -688,6 +838,8 @@ TRANSLATIONS = {
         "pt": "Salvar colagem como… e fechar",
         "zh": "将拼图另存为…并关闭",
         "ja": "コラージュを名前を付けて保存して閉じる",
+        "hi": "कोलाज को इस नाम से सहेजें… और बंद करें",
+        "ar": "حفظ الكولاج باسم… وإغلاق",
     },
     "Не удалось изменить автозапуск: {e}": {
         "en": "Could not change autostart: {e}",
@@ -697,6 +849,8 @@ TRANSLATIONS = {
         "pt": "Não foi possível alterar a inicialização automática: {e}",
         "zh": "无法更改开机自启：{e}",
         "ja": "自動起動を変更できませんでした：{e}",
+        "hi": "ऑटोस्टार्ट बदला नहीं जा सका: {e}",
+        "ar": "تعذّر تغيير التشغيل التلقائي: {e}",
     },
     "Не удалось снять экран: {e}": {
         "en": "Could not capture the screen: {e}",
@@ -706,6 +860,8 @@ TRANSLATIONS = {
         "pt": "Não foi possível capturar a tela: {e}",
         "zh": "无法截取屏幕：{e}",
         "ja": "画面を撮影できませんでした：{e}",
+        "hi": "स्क्रीन कैप्चर नहीं हो सकी: {e}",
+        "ar": "تعذّر التقاط الشاشة: {e}",
     },
     "Сделать скриншот (PrtScn)": {
         "en": "Take a screenshot (PrtScn)",
@@ -715,6 +871,8 @@ TRANSLATIONS = {
         "pt": "Fazer uma captura (PrtScn)",
         "zh": "截图 (PrtScn)",
         "ja": "スクリーンショットを撮る (PrtScn)",
+        "hi": "स्क्रीनशॉट लें (PrtScn)",
+        "ar": "التقاط لقطة شاشة (PrtScn)",
     },
     "Коллаж: кадров {n}…": {
         "en": "Collage: {n} frames…",
@@ -724,6 +882,8 @@ TRANSLATIONS = {
         "pt": "Colagem: {n} quadros…",
         "zh": "拼图：{n} 帧…",
         "ja": "コラージュ：{n} フレーム…",
+        "hi": "कोलाज: {n} फ़्रेम…",
+        "ar": "الكولاج: {n} إطارات…",
     },
     "Запускать вместе с Windows": {
         "en": "Start with Windows",
@@ -733,6 +893,8 @@ TRANSLATIONS = {
         "pt": "Iniciar com o Windows",
         "zh": "随 Windows 启动",
         "ja": "Windows と一緒に起動",
+        "hi": "Windows के साथ शुरू करें",
+        "ar": "التشغيل مع Windows",
     },
     "Выход": {
         "en": "Exit",
@@ -742,6 +904,8 @@ TRANSLATIONS = {
         "pt": "Sair",
         "zh": "退出",
         "ja": "終了",
+        "hi": "बाहर निकलें",
+        "ar": "خروج",
     },
     "Выделение: перемещение и изменение области  (V)": {
         "en": "Select: move and resize the area  (V)",
@@ -751,6 +915,8 @@ TRANSLATIONS = {
         "pt": "Seleção: mover e redimensionar a área  (V)",
         "zh": "选择：移动并调整区域大小  (V)",
         "ja": "選択：範囲の移動とサイズ変更  (V)",
+        "hi": "चयन: क्षेत्र को हिलाएँ और उसका आकार बदलें  (V)",
+        "ar": "تحديد: نقل المنطقة وتغيير حجمها  (V)",
     },
     "Карандаш — свободное рисование  (P)\nS — скругление вкл/выкл": {
         "en": "Pencil — freehand drawing  (P)\nS — rounding on/off",
@@ -760,6 +926,8 @@ TRANSLATIONS = {
         "pt": "Lápis — desenho livre  (P)\nS — arredondamento ligado/desligado",
         "zh": "铅笔 — 自由绘制  (P)\nS — 圆滑 开/关",
         "ja": "鉛筆 — フリーハンド描画  (P)\nS — 丸み オン/オフ",
+        "hi": "पेंसिल — मुक्त चित्रण  (P)\nS — गोलाई चालू/बंद",
+        "ar": "قلم — رسم حر  (P)\nS — الاستدارة تشغيل/إيقاف",
     },
     "Прямая линия  (L)\nShift — шаг 15°": {
         "en": "Straight line  (L)\nShift — 15° steps",
@@ -769,6 +937,8 @@ TRANSLATIONS = {
         "pt": "Linha reta  (L)\nShift — passos de 15°",
         "zh": "直线  (L)\nShift — 以 15° 为步长",
         "ja": "直線  (L)\nShift — 15° ずつ",
+        "hi": "सीधी रेखा  (L)\nShift — 15° के चरण",
+        "ar": "خط مستقيم  (L)\nShift — خطوات 15°",
     },
     "Кривая по 3 точкам  (C)\nПотяните от начала к концу, затем двигайте\nсреднюю (цветную) точку, чтобы выгнуть.\nКрайние точки тоже двигаются.": {
         "en": "Curve by 3 points  (C)\nDrag from start to end, then move the\nmiddle (colored) point to bend it.\nThe end points can be moved too.",
@@ -778,6 +948,8 @@ TRANSLATIONS = {
         "pt": "Curva por 3 pontos  (C)\nArraste do início ao fim e depois mova o\nponto central (colorido) para curvá-la.\nOs pontos das extremidades também se movem.",
         "zh": "三点曲线  (C)\n从起点拖到终点，然后移动\n中间（彩色）点来弯曲曲线。\n两端的点也可以移动。",
         "ja": "3 点カーブ  (C)\n始点から終点までドラッグし、\n中央（色付き）の点を動かして曲げます。\n両端の点も動かせます。",
+        "hi": "3 बिंदुओं वाला वक्र  (C)\nशुरू से अंत तक खींचें, फिर बीच के\n(रंगीन) बिंदु को हिलाकर मोड़ें।\nसिरों के बिंदु भी हिलाए जा सकते हैं।",
+        "ar": "منحنى بثلاث نقاط  (C)\nاسحب من البداية إلى النهاية، ثم حرّك\nالنقطة الوسطى (الملوّنة) لثني المنحنى.\nويمكن تحريك نقطتي الطرفين أيضًا.",
     },
     "Стрелка  (A)\nShift — шаг 15°": {
         "en": "Arrow  (A)\nShift — 15° steps",
@@ -787,6 +959,8 @@ TRANSLATIONS = {
         "pt": "Seta  (A)\nShift — passos de 15°",
         "zh": "箭头  (A)\nShift — 以 15° 为步长",
         "ja": "矢印  (A)\nShift — 15° ずつ",
+        "hi": "तीर  (A)\nShift — 15° के चरण",
+        "ar": "سهم  (A)\nShift — خطوات 15°",
     },
     "Общие": {
         "en": "General",
@@ -796,6 +970,8 @@ TRANSLATIONS = {
         "pt": "Geral",
         "zh": "常规",
         "ja": "全般",
+        "hi": "सामान्य",
+        "ar": "عام",
     },
     "Инструменты": {
         "en": "Tools",
@@ -805,6 +981,8 @@ TRANSLATIONS = {
         "pt": "Ferramentas",
         "zh": "工具",
         "ja": "ツール",
+        "hi": "टूल",
+        "ar": "الأدوات",
     },
     "Сделать скриншот; второе нажатие — сохранить и закрыть": {
         "en": "Take a screenshot; press again to save and close",
@@ -814,6 +992,8 @@ TRANSLATIONS = {
         "pt": "Fazer uma captura; um segundo toque salva e fecha",
         "zh": "截图；再按一次即保存并关闭",
         "ja": "スクリーンショットを撮る。もう一度押すと保存して閉じる",
+        "hi": "स्क्रीनशॉट लें; दोबारा दबाने पर सहेजकर बंद हो जाता है",
+        "ar": "التقاط لقطة شاشة؛ الضغط مرة أخرى يحفظ ويغلق",
     },
     "Выход из режима скриншота": {
         "en": "Leave screenshot mode",
@@ -823,6 +1003,8 @@ TRANSLATIONS = {
         "pt": "Sair do modo de captura",
         "zh": "退出截图模式",
         "ja": "スクリーンショットモードを終了",
+        "hi": "स्क्रीनशॉट मोड से बाहर निकलें",
+        "ar": "الخروج من وضع لقطة الشاشة",
     },
     "Скопировать выделенное в буфер обмена": {
         "en": "Copy the selection to the clipboard",
@@ -832,6 +1014,8 @@ TRANSLATIONS = {
         "pt": "Copiar a seleção para a área de transferência",
         "zh": "将选区复制到剪贴板",
         "ja": "選択範囲をクリップボードにコピー",
+        "hi": "चयन को क्लिपबोर्ड पर कॉपी करें",
+        "ar": "نسخ التحديد إلى الحافظة",
     },
     "Быстрое сохранение": {
         "en": "Quick save",
@@ -841,6 +1025,8 @@ TRANSLATIONS = {
         "pt": "Salvamento rápido",
         "zh": "快速保存",
         "ja": "クイック保存",
+        "hi": "त्वरित सहेजना",
+        "ar": "حفظ سريع",
     },
     "Сохранить как…": {
         "en": "Save as…",
@@ -850,6 +1036,8 @@ TRANSLATIONS = {
         "pt": "Salvar como…",
         "zh": "另存为…",
         "ja": "名前を付けて保存…",
+        "hi": "इस नाम से सहेजें…",
+        "ar": "حفظ باسم…",
     },
     "Скопировать в буфер обмена": {
         "en": "Copy to clipboard",
@@ -859,6 +1047,8 @@ TRANSLATIONS = {
         "pt": "Copiar para a área de transferência",
         "zh": "复制到剪贴板",
         "ja": "クリップボードにコピー",
+        "hi": "क्लिपबोर्ड पर कॉपी करें",
+        "ar": "نسخ إلى الحافظة",
     },
     "Выделить весь экран": {
         "en": "Select the whole screen",
@@ -868,6 +1058,8 @@ TRANSLATIONS = {
         "pt": "Selecionar a tela inteira",
         "zh": "选择整个屏幕",
         "ja": "画面全体を選択",
+        "hi": "पूरी स्क्रीन चुनें",
+        "ar": "تحديد الشاشة كاملة",
     },
     "Отменить / повторить (Ctrl+Shift+Z — повторить)": {
         "en": "Undo / redo (Ctrl+Shift+Z — redo)",
@@ -877,6 +1069,8 @@ TRANSLATIONS = {
         "pt": "Desfazer / refazer (Ctrl+Shift+Z — refazer)",
         "zh": "撤销 / 重做（Ctrl+Shift+Z — 重做）",
         "ja": "元に戻す / やり直し（Ctrl+Shift+Z — やり直し）",
+        "hi": "पूर्ववत / फिर से (Ctrl+Shift+Z — फिर से)",
+        "ar": "تراجع / إعادة (Ctrl+Shift+Z — إعادة)",
     },
     "Стрелки (Shift — ×10)": {
         "en": "Arrows (Shift — ×10)",
@@ -886,6 +1080,8 @@ TRANSLATIONS = {
         "pt": "Setas (Shift — ×10)",
         "zh": "方向键 (Shift — ×10)",
         "ja": "矢印キー (Shift — ×10)",
+        "hi": "तीर कुंजियाँ (Shift — ×10)",
+        "ar": "الأسهم (Shift — ×10)",
     },
     "Сдвинуть рамку выделения": {
         "en": "Move the selection frame",
@@ -895,6 +1091,8 @@ TRANSLATIONS = {
         "pt": "Mover a moldura de seleção",
         "zh": "移动选区框",
         "ja": "選択枠を移動",
+        "hi": "चयन फ़्रेम को हिलाएँ",
+        "ar": "تحريك إطار التحديد",
     },
     "Перемещение рамки (повторно — отжать)": {
         "en": "Move the frame (press again to release)",
@@ -904,6 +1102,8 @@ TRANSLATIONS = {
         "pt": "Mover a moldura (pressione de novo para soltar)",
         "zh": "移动框（再按一次取消）",
         "ja": "枠の移動（もう一度押すと解除）",
+        "hi": "फ़्रेम हिलाना (दोबारा दबाने पर बंद)",
+        "ar": "تحريك الإطار (اضغط مرة أخرى للإلغاء)",
     },
     "Карандаш": {
         "en": "Pencil",
@@ -913,6 +1113,8 @@ TRANSLATIONS = {
         "pt": "Lápis",
         "zh": "铅笔",
         "ja": "鉛筆",
+        "hi": "पेंसिल",
+        "ar": "قلم",
     },
     "Линия": {
         "en": "Line",
@@ -922,6 +1124,8 @@ TRANSLATIONS = {
         "pt": "Linha",
         "zh": "直线",
         "ja": "直線",
+        "hi": "रेखा",
+        "ar": "خط",
     },
     "Кривая по 3 точкам": {
         "en": "Curve by 3 points",
@@ -931,6 +1135,8 @@ TRANSLATIONS = {
         "pt": "Curva por 3 pontos",
         "zh": "三点曲线",
         "ja": "3 点カーブ",
+        "hi": "3 बिंदुओं वाला वक्र",
+        "ar": "منحنى بثلاث نقاط",
     },
     "Стрелка": {
         "en": "Arrow",
@@ -940,6 +1146,8 @@ TRANSLATIONS = {
         "pt": "Seta",
         "zh": "箭头",
         "ja": "矢印",
+        "hi": "तीर",
+        "ar": "سهم",
     },
     "Прямоугольник": {
         "en": "Rectangle",
@@ -949,6 +1157,8 @@ TRANSLATIONS = {
         "pt": "Retângulo",
         "zh": "矩形",
         "ja": "四角形",
+        "hi": "आयत",
+        "ar": "مستطيل",
     },
     "Круг / эллипс": {
         "en": "Circle / ellipse",
@@ -958,6 +1168,8 @@ TRANSLATIONS = {
         "pt": "Círculo / elipse",
         "zh": "圆 / 椭圆",
         "ja": "円 / 楕円",
+        "hi": "वृत्त / दीर्घवृत्त",
+        "ar": "دائرة / قطع ناقص",
     },
     "Скругление карандаша вкл/выкл": {
         "en": "Pencil rounding on/off",
@@ -967,6 +1179,8 @@ TRANSLATIONS = {
         "pt": "Arredondamento do lápis ligado/desligado",
         "zh": "铅笔圆滑 开/关",
         "ja": "鉛筆の丸み オン/オフ",
+        "hi": "पेंसिल की गोलाई चालू/बंद",
+        "ar": "استدارة القلم تشغيل/إيقاف",
     },
     "[  и  ]": {
         "en": "[  and  ]",
@@ -976,6 +1190,8 @@ TRANSLATIONS = {
         "pt": "[  e  ]",
         "zh": "[  和  ]",
         "ja": "[  と  ]",
+        "hi": "[  और  ]",
+        "ar": "[  و  ]",
     },
     "Толщина меньше / больше": {
         "en": "Thinner / thicker",
@@ -985,6 +1201,8 @@ TRANSLATIONS = {
         "pt": "Mais fino / mais grosso",
         "zh": "更细 / 更粗",
         "ja": "細く / 太く",
+        "hi": "पतला / मोटा",
+        "ar": "أنحف / أسمك",
     },
     "Выбор пропорций рамки": {
         "en": "Choose the frame proportions",
@@ -994,6 +1212,8 @@ TRANSLATIONS = {
         "pt": "Escolher as proporções da moldura",
         "zh": "选择框的比例",
         "ja": "枠の比率を選択",
+        "hi": "फ़्रेम का अनुपात चुनें",
+        "ar": "اختيار نسبة الإطار",
     },
     "Shift при рисовании": {
         "en": "Shift while drawing",
@@ -1003,6 +1223,8 @@ TRANSLATIONS = {
         "pt": "Shift ao desenhar",
         "zh": "绘制时按 Shift",
         "ja": "描画中の Shift",
+        "hi": "चित्रण के दौरान Shift",
+        "ar": "Shift أثناء الرسم",
     },
     "Шаг 15° / квадрат / ровный круг": {
         "en": "15° steps / square / perfect circle",
@@ -1012,6 +1234,8 @@ TRANSLATIONS = {
         "pt": "Passos de 15° / quadrado / círculo perfeito",
         "zh": "15° 步长 / 正方形 / 正圆",
         "ja": "15° ずつ / 正方形 / 正円",
+        "hi": "15° के चरण / वर्ग / सटीक वृत्त",
+        "ar": "خطوات 15° / مربع / دائرة مثالية",
     },
     "Язык изменён. Интерфейс обновится при следующем скриншоте.": {
         "en": "Language changed. The interface will update at the next screenshot.",
@@ -1021,6 +1245,8 @@ TRANSLATIONS = {
         "pt": "Idioma alterado. A interface será atualizada na próxima captura.",
         "zh": "语言已更改。界面将在下次截图时更新。",
         "ja": "言語を変更しました。次回のスクリーンショットから反映されます。",
+        "hi": "भाषा बदल गई। इंटरफ़ेस अगले स्क्रीनशॉट पर अपडेट होगा।",
+        "ar": "تم تغيير اللغة. ستتحدث الواجهة عند لقطة الشاشة التالية.",
     },
     "Язык интерфейса": {
         "en": "Interface language",
@@ -1030,5 +1256,7 @@ TRANSLATIONS = {
         "pt": "Idioma da interface",
         "zh": "界面语言",
         "ja": "表示言語",
+        "hi": "इंटरफ़ेस की भाषा",
+        "ar": "لغة الواجهة",
     },
 }

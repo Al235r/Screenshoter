@@ -1,8 +1,8 @@
 # Screenshoter
 
-[Русский](README.md) · [English](README.en.md) · [Español](README.es.md) · **Deutsch** · [Français](README.fr.md) · [Português](README.pt.md) · [中文](README.zh.md) · [日本語](README.ja.md)
+[English](README.md) · [Русский](README.ru.md) · [Español](README.es.md) · **Deutsch** · [Français](README.fr.md) · [Português](README.pt.md) · [中文](README.zh.md) · [日本語](README.ja.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md)
 
-**Screenshoter** ist ein schnelles Screenshot-Programm für Windows im Stil von Lightshot: **PrtScn** drücken, Bereich auswählen, Pfeile, Rahmen und Notizen darüber zeichnen, speichern oder kopieren. Modernes dunkles Design, läuft im Infobereich der Taskleiste. Die Oberfläche gibt es in 8 Sprachen.
+**Screenshoter** ist ein schnelles Screenshot-Programm für Windows im Stil von Lightshot: **PrtScn** drücken, Bereich auswählen, Pfeile, Rahmen und Notizen darüber zeichnen, speichern oder kopieren. Modernes dunkles Design, läuft im Infobereich der Taskleiste. Die Oberfläche gibt es in 10 Sprachen.
 
 ![Screenshot-Editor](images/de/editor.png)
 
@@ -16,7 +16,19 @@
 - **Aufnahme beim Speichern**: Der Bildschirm wird nicht eingefroren, Videos laufen weiter, das Bild entsteht beim Speichern.
 - **Collage**: Live-Modus, Bilder mit der Beschriftung „Screenshot N“, schwarze Ränder, Abdunklung außerhalb des Rahmens.
 - Mehrere Monitore und Windows-Skalierung von 125–200 %.
-- **8 Oberflächensprachen**: Русский, English, Español, Deutsch, Français, Português, 中文, 日本語 (Auswahl in den Einstellungen).
+- **10 Oberflächensprachen**: Русский, English, Español, Deutsch, Français, Português, 中文, 日本語, हिन्दी, العربية (Auswahl in den Einstellungen).
+
+## Collage-Modus
+
+Sammeln Sie mehrere Bildschirmausschnitte auf **einem Blatt** – für eine Anleitung, einen Fehlerbericht, einen Vorher/Nachher-Vergleich oder einen Beitrag. Der Bildschirm bleibt live: Sie können eine Seite scrollen oder ein Video abspielen und weiter Bilder aufnehmen.
+
+![Collage-Fenster](images/de/collage.png)
+
+1. Öffnen Sie einen Screenshot (**PrtScn**), wählen Sie einen Bereich und klicken Sie in der Leiste auf **Collage**. Der Bildschirm friert nicht ein, er bleibt live.
+2. Rahmen verschieben oder in der Größe ändern, dann auf die **Bild**-Schaltfläche (oder **PrtScn** / **Enter**) klicken, um den Bereich aufzunehmen. Beliebig oft wiederholen.
+3. Das Collage-Fenster ordnet die Bilder in einem Raster an, jedes mit der Beschriftung „Screenshot N“ und durch schwarze Ränder getrennt. Wählen Sie das **Zellenverhältnis** (auto, 1:1, 16:9, eigenes …) und die **Spaltenzahl**.
+4. Blatt **speichern** (PNG, JPG, WEBP, BMP), **Speichern unter …**, in die Zwischenablage **kopieren**, das letzte Bild zurücknehmen, alles löschen oder das Fenster minimieren und weiter aufnehmen.
+5. Beim Verlassen des Collage-Modus über die Collage-Schaltfläche werden die aufgenommenen Bilder verworfen.
 
 ## Oberfläche
 

@@ -1,8 +1,8 @@
 # Screenshoter（截图工具）
 
-[Русский](README.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Português](README.pt.md) · **中文** · [日本語](README.ja.md)
+[English](README.md) · [Русский](README.ru.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Português](README.pt.md) · **中文** · [日本語](README.ja.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md)
 
-**Screenshoter** 是一款类似 Lightshot 的 Windows 快速截图工具：按下 **PrtScn**，框选区域，在上面绘制箭头、边框和标注，然后保存或复制。现代深色界面，常驻系统托盘。界面支持 8 种语言。
+**Screenshoter** 是一款类似 Lightshot 的 Windows 快速截图工具：按下 **PrtScn**，框选区域，在上面绘制箭头、边框和标注，然后保存或复制。现代深色界面，常驻系统托盘。界面支持 10 种语言。
 
 ![截图编辑器](images/zh/editor.png)
 
@@ -16,7 +16,19 @@
 - **保存时截图**：屏幕不会冻结，视频继续播放，保存的瞬间才截取画面。
 - **拼图**：实时模式，帧带有“截图 N”标注和黑色边框，框外变暗。
 - 支持多显示器以及 125–200% 的 Windows 缩放。
-- **8 种界面语言**：Русский、English、Español、Deutsch、Français、Português、中文、日本語（在设置中选择）。
+- **10 种界面语言**：Русский、English、Español、Deutsch、Français、Português、中文、日本語、हिन्दी、العربية（在设置中选择）。
+
+## 拼图模式
+
+把屏幕的多个片段收集到**一张图**上——适合教程、问题报告、前后对比或社交媒体发布。操作时屏幕保持“活动”，你可以滚动页面或播放视频，同时继续截取画面。
+
+![拼图窗口](images/zh/collage.png)
+
+1. 打开截图（**PrtScn**），选择区域，然后点击工具栏上的**拼图**按钮。屏幕不会冻结，而是保持实时。
+2. 移动或调整选框大小，然后点击**取景**按钮（或按 **PrtScn** / **Enter**）截取该区域。可重复任意次。
+3. 拼图窗口会把画面按网格排列，每张带有“截图 N”标题，并以黑色边框分隔。可选择**单元格比例**（自动、1:1、16:9、自定义……）和**列数**。
+4. **保存**拼图（PNG、JPG、WEBP、BMP）、**另存为…**、**复制**到剪贴板、撤销最后一张、清空全部，或最小化窗口后继续截取。
+5. 通过拼图按钮退出拼图模式会丢弃已截取的画面。
 
 ## 界面
 

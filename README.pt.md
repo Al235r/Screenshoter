@@ -1,8 +1,8 @@
 # Screenshoter
 
-[Русский](README.md) · [English](README.en.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · **Português** · [中文](README.zh.md) · [日本語](README.ja.md)
+[English](README.md) · [Русский](README.ru.md) · [Español](README.es.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · **Português** · [中文](README.zh.md) · [日本語](README.ja.md) · [हिन्दी](README.hi.md) · [العربية](README.ar.md)
 
-**Screenshoter** é uma ferramenta rápida de capturas de tela para Windows no estilo do Lightshot: pressione **PrtScn**, selecione uma área, desenhe setas, molduras e anotações por cima e salve ou copie. Interface escura moderna, funciona na bandeja do sistema. A interface está disponível em 8 idiomas.
+**Screenshoter** é uma ferramenta rápida de capturas de tela para Windows no estilo do Lightshot: pressione **PrtScn**, selecione uma área, desenhe setas, molduras e anotações por cima e salve ou copie. Interface escura moderna, funciona na bandeja do sistema. A interface está disponível em 10 idiomas.
 
 ![Editor de capturas](images/pt/editor.png)
 
@@ -16,7 +16,19 @@
 - **Captura ao salvar**: a tela não congela, o vídeo continua e a imagem é feita no momento de salvar.
 - **Colagem**: modo ao vivo, quadros com a legenda “Captura N”, bordas pretas e escurecimento fora da moldura.
 - Vários monitores e escala do Windows de 125 a 200 %.
-- **8 idiomas de interface**: Русский, English, Español, Deutsch, Français, Português, 中文, 日本語 (escolha em Configurações).
+- **10 idiomas de interface**: Русский, English, Español, Deutsch, Français, Português, 中文, 日本語, हिन्दी, العربية (escolha em Configurações).
+
+## Modo colagem
+
+Reúna várias partes da tela em **uma única folha** — para um tutorial, um relatório de erro, uma comparação antes/depois ou uma publicação. A tela continua ativa enquanto você trabalha: role uma página ou reproduza um vídeo e continue capturando.
+
+![Janela da colagem](images/pt/collage.png)
+
+1. Abra uma captura (**PrtScn**), selecione uma área e clique no botão de **colagem** na barra. A tela não congela — continua ao vivo.
+2. Mova ou redimensione a moldura e clique no botão de **quadro** (ou **PrtScn** / **Enter**) para capturar a área. Repita quantas vezes precisar.
+3. A janela da colagem reúne os quadros em uma grade, cada um com a legenda “Captura N” e separado por bordas pretas. Escolha a **proporção da célula** (auto, 1:1, 16:9, personalizada…) e o **número de colunas**.
+4. **Salve** a folha (PNG, JPG, WEBP, BMP), **Salvar como…**, **copie** para a área de transferência, desfaça o último quadro, limpe tudo ou minimize a janela e continue capturando.
+5. Sair do modo colagem pelo botão descarta os quadros capturados.
 
 ## Interface
 

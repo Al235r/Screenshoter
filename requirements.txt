@@ -1,3 +1,5 @@
 pillow>=10.0
 pystray>=0.19
 pynput>=1.7
+arabic-reshaper>=3.0
+python-bidi>=0.4.2

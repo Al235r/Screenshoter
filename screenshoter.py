@@ -12,6 +12,7 @@ import sys
 import os
 import io
 import json
+import re
 import math
 import colorsys
 import copy
@@ -43,7 +44,7 @@ def _detect_lang():
     try:
         if IS_WIN:
             lid = ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF
-            return {0x19: "ru", 0x0A: "es", 0x07: "de", 0x0C: "fr", 0x16: "pt", 0x04: "zh", 0x11: "ja"}.get(lid, "en")
+            return {0x19: "ru", 0x0A: "es", 0x07: "de", 0x0C: "fr", 0x16: "pt", 0x04: "zh", 0x11: "ja", 0x39: "hi", 0x01: "ar"}.get(lid, "en")
     except Exception:
         pass
     return "en"
@@ -52,12 +53,44 @@ def _detect_lang():
 LANG = _detect_lang()
 
 
+_RTL_CACHE = {}
+
+
+def _rtl(text):
+    """Арабский: Tk и Pillow не умеют соединять буквы и менять порядок — делаем это сами
+    (arabic-reshaper + python-bidi). Если библиотек нет — текст остаётся как есть."""
+    if text in _RTL_CACHE:
+        return _RTL_CACHE[text]
+    out = text
+    try:
+        import arabic_reshaper
+        try:
+            from bidi.algorithm import get_display
+        except Exception:
+            from bidi import get_display
+        names = re.findall(r"\{\w+\}", text)
+        t = text
+        for i, nm in enumerate(names):
+            t = t.replace(nm, "Zq%dZq" % i, 1)
+        lines = [get_display(arabic_reshaper.reshape(ln)) for ln in t.split("\n")]
+        out = "\n".join(lines)
+        for i, nm in enumerate(names):
+            out = out.replace("Zq%dZq" % i, nm)
+    except Exception:
+        out = text
+    _RTL_CACHE[text] = out
+    return out
+
+
 def tr(s):
     """Перевод строки интерфейса. Ключ — русский текст; нет перевода — показываем как есть."""
     if LANG == "ru":
         return s
     v = TRANSLATIONS.get(s)
-    return v[LANG] if v and LANG in v else s
+    r = v[LANG] if v and LANG in v else s
+    if LANG == "ar" and v and LANG in v:
+        r = _rtl(r)
+    return r
 
 
 APP_NAME = NAME_BY_LANG.get(LANG, "Screenshoter")
@@ -71,7 +104,7 @@ def set_lang(code):
 
 
 APP_ID = "Screenshoter"
-VERSION = "5.5"
+VERSION = "5.6"
 
 # ----------------------------------------------------------------- оформление
 BG = "#191c38"        # панель
@@ -1137,7 +1170,9 @@ def collage_auto_cols(n):
 
 def load_font(size):
     cjk = {"zh": ("msyh.ttc", "simhei.ttf", "NotoSansCJK-Regular.ttc"),
-           "ja": ("YuGothM.ttc", "meiryo.ttc", "msgothic.ttc", "NotoSansCJK-Regular.ttc")}.get(LANG, ())
+           "ja": ("YuGothM.ttc", "meiryo.ttc", "msgothic.ttc", "NotoSansCJK-Regular.ttc"),
+           "hi": ("Nirmala.ttc", "Nirmala.ttf", "NirmalaUI.ttf", "FreeSerif.ttf"),
+           "ar": ("segoeui.ttf", "tahoma.ttf", "arial.ttf")}.get(LANG, ())
     for name in cjk + ("segoeui.ttf", "arial.ttf", "DejaVuSans.ttf", "LiberationSans-Regular.ttf"):
         try:
             return ImageFont.truetype(name, size)
