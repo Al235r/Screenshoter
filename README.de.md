@@ -22,6 +22,8 @@
 
 Sammeln Sie mehrere Bildschirmausschnitte auf **einem Blatt** – für eine Anleitung, einen Fehlerbericht, einen Vorher/Nachher-Vergleich oder einen Beitrag. Der Bildschirm bleibt live: Sie können eine Seite scrollen oder ein Video abspielen und weiter Bilder aufnehmen.
 
+![Collage-Fenster](images/de/collage_overview.png)
+
 ![Collage-Fenster](images/de/collage.png)
 
 1. Öffnen Sie einen Screenshot (**PrtScn**), wählen Sie einen Bereich und klicken Sie in der Leiste auf **Collage**. Der Bildschirm friert nicht ein, er bleibt live.

@@ -22,6 +22,8 @@
 
 Reúna várias partes da tela em **uma única folha** — para um tutorial, um relatório de erro, uma comparação antes/depois ou uma publicação. A tela continua ativa enquanto você trabalha: role uma página ou reproduza um vídeo e continue capturando.
 
+![Janela da colagem](images/pt/collage_overview.png)
+
 ![Janela da colagem](images/pt/collage.png)
 
 1. Abra uma captura (**PrtScn**), selecione uma área e clique no botão de **colagem** na barra. A tela não congela — continua ao vivo.

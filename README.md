@@ -22,6 +22,8 @@
 
 Collect several pieces of the screen on **one sheet** — for a tutorial, a bug report, a before/after comparison or a social-media post. The screen stays alive while you work, so you can scroll a page or play a video and keep taking frames.
 
+![Collage window](images/en/collage_overview.png)
+
 ![Collage window](images/en/collage.png)
 
 1. Open a screenshot (**PrtScn**), select an area and press the **collage** button on the toolbar. The screen is not frozen — it goes live.

@@ -22,6 +22,8 @@
 
 Rassemblez plusieurs morceaux de l’écran sur **une seule feuille** : pour un tutoriel, un rapport de bug, une comparaison avant/après ou une publication. L’écran reste vivant pendant que vous travaillez : faites défiler une page ou lisez une vidéo tout en continuant à capturer.
 
+![Fenêtre du collage](images/fr/collage_overview.png)
+
 ![Fenêtre du collage](images/fr/collage.png)
 
 1. Ouvrez une capture (**PrtScn**), sélectionnez une zone et cliquez sur le bouton **collage** de la barre. L’écran ne se fige pas : il reste en direct.

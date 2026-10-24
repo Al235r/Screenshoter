@@ -22,6 +22,8 @@
 
 Reúna varias partes de la pantalla en **una sola hoja**: para un tutorial, un informe de errores, una comparación antes/después o una publicación. La pantalla sigue activa mientras trabaja, así que puede desplazar una página o reproducir un vídeo y seguir capturando.
 
+![Ventana del collage](images/es/collage_overview.png)
+
 ![Ventana del collage](images/es/collage.png)
 
 1. Abra una captura (**PrtScn**), seleccione un área y pulse el botón de **collage** de la barra. La pantalla no se congela: sigue en vivo.
