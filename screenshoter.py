@@ -26,9 +26,52 @@ from tkinter import filedialog, colorchooser, simpledialog, messagebox
 from PIL import Image, ImageTk, ImageDraw, ImageGrab, ImageEnhance, ImageChops, ImageFont
 
 IS_WIN = sys.platform.startswith("win")
-APP_NAME = "Скриншотер"
+from i18n_data import TRANSLATIONS, LANGUAGES, NAME_BY_LANG
+
+
+def _detect_lang():
+    """Язык интерфейса: из настроек, а если там пусто — по языку Windows."""
+    try:
+        base = os.environ.get("APPDATA") if IS_WIN else os.path.expanduser("~/.config")
+        p = os.path.join(base or os.path.expanduser("~"), "Screenshoter", "settings.json")
+        with open(p, encoding="utf-8") as f:
+            v = json.load(f).get("lang")
+        if v in LANGUAGES:
+            return v
+    except Exception:
+        pass
+    try:
+        if IS_WIN:
+            lid = ctypes.windll.kernel32.GetUserDefaultUILanguage() & 0x3FF
+            return {0x19: "ru", 0x0A: "es", 0x07: "de", 0x0C: "fr", 0x16: "pt", 0x04: "zh", 0x11: "ja"}.get(lid, "en")
+    except Exception:
+        pass
+    return "en"
+
+
+LANG = _detect_lang()
+
+
+def tr(s):
+    """Перевод строки интерфейса. Ключ — русский текст; нет перевода — показываем как есть."""
+    if LANG == "ru":
+        return s
+    v = TRANSLATIONS.get(s)
+    return v[LANG] if v and LANG in v else s
+
+
+APP_NAME = NAME_BY_LANG.get(LANG, "Screenshoter")
+
+
+def set_lang(code):
+    global LANG, APP_NAME
+    if code in LANGUAGES:
+        LANG = code
+        APP_NAME = NAME_BY_LANG.get(LANG, "Screenshoter")
+
+
 APP_ID = "Screenshoter"
-VERSION = "5.2"
+VERSION = "5.3"
 
 # ----------------------------------------------------------------- оформление
 BG = "#191c38"        # панель
@@ -238,7 +281,7 @@ def paste_cursor(img, cur):
 def copy_image_to_clipboard(img, hwnd=None):
     """Кладёт картинку в буфер обмена Windows (форматы DIB и PNG)."""
     if not IS_WIN:
-        raise OSError("Копирование в буфер обмена реализовано только для Windows")
+        raise OSError(tr("Копирование в буфер обмена реализовано только для Windows"))
     bmp = io.BytesIO()
     img.convert("RGB").save(bmp, "BMP")
     dib = bmp.getvalue()[14:]           # без 14-байтного заголовка файла
@@ -269,12 +312,12 @@ def copy_image_to_clipboard(img, hwnd=None):
         k.GlobalUnlock(h)
         if not u.SetClipboardData(fmt, h):
             k.GlobalFree(h)
-            raise OSError("не удалось положить данные в буфер обмена")
+            raise OSError(tr("не удалось положить данные в буфер обмена"))
 
     last = None
     for attempt in range(8):                            # буфер бывает занят другой программой — пробуем снова
         if not u.OpenClipboard(hwnd):
-            last = OSError("Буфер обмена занят другой программой")
+            last = OSError(tr("Буфер обмена занят другой программой"))
             time.sleep(0.08)
             continue
         try:
@@ -290,7 +333,7 @@ def copy_image_to_clipboard(img, hwnd=None):
         finally:
             u.CloseClipboard()
         time.sleep(0.08)
-    raise last or OSError("Буфер обмена недоступен")
+    raise last or OSError(tr("Буфер обмена недоступен"))
 
 
 def force_foreground(win):
@@ -685,21 +728,6 @@ def pil_draw_shape(d, sh, ox, oy, S):
         hw = w / 2
         d.rectangle([round(x0 - hw), round(y0 - hw), round(x1 + hw), round(y1 + hw)],
                     outline=col, width=max(1, int(round(w))))
-
-
-def live_layer(lay):
-    """В живом режиме окно прозрачно по «ключевому цвету»: полупрозрачные пиксели смешались бы с ним и дали тёмную
-    кайму. Поэтому показываем жёсткую маску, а прозрачность передаём осветлением цвета."""
-    a = lay.getchannel("A")
-    amax = a.getextrema()[1]
-    if amax <= 0:
-        return lay
-    thr = max(1, amax // 2)
-    mask = a.point(lambda v, t=thr: 255 if v >= t else 0)
-    k = amax / 255.0
-    rgb = lay.convert("RGB").point(lambda v, k=k: int(v * k + 255 * (1 - k)))
-    rgb.putalpha(mask)
-    return rgb
 
 
 def shapes_layer(shapes, ox, oy, w, h, S=3):
@@ -1108,7 +1136,9 @@ def collage_auto_cols(n):
 
 
 def load_font(size):
-    for name in ("segoeui.ttf", "arial.ttf", "DejaVuSans.ttf", "LiberationSans-Regular.ttf"):
+    cjk = {"zh": ("msyh.ttc", "simhei.ttf", "NotoSansCJK-Regular.ttc"),
+           "ja": ("YuGothM.ttc", "meiryo.ttc", "msgothic.ttc", "NotoSansCJK-Regular.ttc")}.get(LANG, ())
+    for name in cjk + ("segoeui.ttf", "arial.ttf", "DejaVuSans.ttf", "LiberationSans-Regular.ttf"):
         try:
             return ImageFont.truetype(name, size)
         except Exception:
@@ -1149,7 +1179,7 @@ def build_collage(frames, ratio=None, cols=0, margin=0, gap=None):
         fr = fr.copy()
         lay = Image.new("RGBA", fr.size, (0, 0, 0, 0))
         d = ImageDraw.Draw(lay)
-        text = f"Скриншот {i + 1}"
+        text = tr("Скриншот {n}").format(n=i + 1)
         pad = max(3, fsize // 4)
         tw = int(d.textlength(text, font=font))
         d.rectangle([0, fr.height - fsize - pad * 2, tw + pad * 2, fr.height], fill=(0, 0, 0, 150))
@@ -1207,15 +1237,15 @@ def save_collage_image(img, settings, ask, parent=None):
     stamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     ext = FMT_EXT.get(settings.get("fmt"), ".png")
     if ask:
-        path = filedialog.asksaveasfilename(parent=parent, title="Сохранить коллаж как", initialdir=folder,
-                                            initialfile=f"Коллаж_{stamp}{ext}", defaultextension=ext,
+        path = filedialog.asksaveasfilename(parent=parent, title=tr("Сохранить коллаж как"), initialdir=folder,
+                                            initialfile=f"{tr('Коллаж')}_{stamp}{ext}", defaultextension=ext,
                                             filetypes=file_types(settings.get("fmt", "PNG")))
         if not path:
             return None
         settings["last_dir"] = os.path.dirname(path)
     else:
         os.makedirs(folder, exist_ok=True)
-        path = unique_path(folder, f"Коллаж_{stamp}", ext)
+        path = unique_path(folder, f"{tr('Коллаж')}_{stamp}", ext)
     save_image(img, path)
     return path
 
@@ -1232,7 +1262,7 @@ class CollageWindow:
         self.ratio_label = st.get("collage_ratio", "Авто")
         self.cols = int(st.get("collage_cols", 0) or 0)
         w = self.win = tk.Toplevel(app.root)
-        w.title(f"{APP_NAME} — коллаж")
+        w.title(f"{APP_NAME} — {tr('коллаж')}")
         w.configure(bg=BG)
         w.protocol("WM_DELETE_WINDOW", self.hide)
         try:
@@ -1243,19 +1273,19 @@ class CollageWindow:
         self.canvas.pack(padx=8, pady=(8, 4))
         bar = tk.Frame(w, bg=BG, padx=6, pady=4)
         bar.pack(fill="x")
-        self.ratio_mb = self._menu_btn(bar, "ratio:custom", "Пропорции ячейки")
+        self.ratio_mb = self._menu_btn(bar, "ratio:custom", tr("Пропорции ячейки"))
         self.ratio_mb.pack(side="left", padx=1)
-        self.cols_mb = self._menu_btn(bar, "grid", "Число колонок")
+        self.cols_mb = self._menu_btn(bar, "grid", tr("Число колонок"))
         self.cols_mb.pack(side="left", padx=1)
         self._build_menus()
         tk.Frame(bar, width=1, height=22, bg=BG3).pack(side="left", padx=6)
-        self._btn(bar, "undo", self.remove_last, "Убрать последний кадр").pack(side="left", padx=1)
-        self._btn(bar, "trash", self.clear, "Очистить коллаж").pack(side="left", padx=1)
+        self._btn(bar, "undo", self.remove_last, tr("Убрать последний кадр")).pack(side="left", padx=1)
+        self._btn(bar, "trash", self.clear, tr("Очистить коллаж")).pack(side="left", padx=1)
         tk.Frame(bar, width=1, height=22, bg=BG3).pack(side="left", padx=6)
-        self._btn(bar, "copy", self.copy, "Копировать коллаж в буфер обмена", bg=ACC).pack(side="left", padx=1)
-        self._btn(bar, "save", lambda: self.save(False), "Сохранить сразу и закрыть").pack(side="left", padx=1)
-        self._btn(bar, "saveas", lambda: self.save(True), "Сохранить как… и закрыть").pack(side="left", padx=1)
-        self._btn(bar, "close", self.hide, "Свернуть окно (кадры сохраняются)").pack(side="left", padx=1)
+        self._btn(bar, "copy", self.copy, tr("Копировать коллаж в буфер обмена"), bg=ACC).pack(side="left", padx=1)
+        self._btn(bar, "save", lambda: self.save(False), tr("Сохранить сразу и закрыть")).pack(side="left", padx=1)
+        self._btn(bar, "saveas", lambda: self.save(True), tr("Сохранить как… и закрыть")).pack(side="left", padx=1)
+        self._btn(bar, "close", self.hide, tr("Свернуть окно (кадры сохраняются)")).pack(side="left", padx=1)
         self.info = tk.Label(bar, text="", bg=BG, fg="#9a9a9a", font=("Segoe UI", 9))
         self.info.pack(side="right", padx=6)
         w.bind("<Escape>", lambda e: self.hide())
@@ -1281,14 +1311,14 @@ class CollageWindow:
     def _build_menus(self):
         m = tk.Menu(self.ratio_mb, tearoff=0, font=("Segoe UI", 10))
         for lab in COLLAGE_RATIOS:
-            m.add_command(label=("Авто (как первый кадр)" if lab == "Авто" else lab),
+            m.add_command(label=(tr("Авто (как первый кадр)") if lab == "Авто" else lab),
                           command=lambda l=lab: self.set_ratio(l))
         m.add_separator()
-        m.add_command(label="Своё…", command=self.custom_ratio)
+        m.add_command(label=tr("Своё…"), command=self.custom_ratio)
         self.ratio_mb.configure(menu=m)
         m2 = tk.Menu(self.cols_mb, tearoff=0, font=("Segoe UI", 10))
         for c in COLLAGE_COLS:
-            m2.add_command(label=("Колонок: авто" if c == 0 else f"Колонок: {c}"),
+            m2.add_command(label=(tr("Колонок: авто") if c == 0 else tr("Колонок: {n}").format(n=c)),
                            command=lambda v=c: self.set_cols(v))
         self.cols_mb.configure(menu=m2)
 
@@ -1323,13 +1353,13 @@ class CollageWindow:
         self.refresh()
 
     def custom_ratio(self):
-        v = simpledialog.askstring(APP_NAME, "Пропорции ячейки (например 21:9 или 1.91:1):", parent=self.win)
+        v = simpledialog.askstring(APP_NAME, tr("Пропорции ячейки (например 21:9 или 1.91:1):"), parent=self.win)
         if v:
             try:
                 if parse_ratio(v.strip())[0] is None:
                     raise ValueError
             except (ValueError, ZeroDivisionError):
-                messagebox.showwarning(APP_NAME, "Не понял формат. Примеры: 21:9, 1.91:1", parent=self.win)
+                messagebox.showwarning(APP_NAME, tr("Не понял формат. Примеры: 21:9, 1.91:1"), parent=self.win)
                 return
             self.set_ratio(v.strip())
 
@@ -1354,14 +1384,14 @@ class CollageWindow:
         self.canvas.delete("all")
         if not frames:
             self.photo = None
-            self.info.configure(text="Кадров нет: PrtScn → выделить → «в коллаж»")
+            self.info.configure(text=tr("Кадров нет: PrtScn → выделить → «в коллаж»"))
             return
         sh = self.sheet()
         sc = min(self.PREV_W / float(sh.width), self.PREV_H / float(sh.height), 1.0)
         prev = sh.resize((max(1, int(sh.width * sc)), max(1, int(sh.height * sc))), Image.LANCZOS)
         self.photo = ImageTk.PhotoImage(prev, master=self.win)
         self.canvas.create_image(self.PREV_W // 2, self.PREV_H // 2, image=self.photo)
-        self.info.configure(text=f"Кадров: {len(frames)}   Лист: {sh.width}×{sh.height}")
+        self.info.configure(text=tr("Кадров: {n}   Лист: {w}×{h}").format(n=len(frames), w=sh.width, h=sh.height))
 
     def remove_last(self):
         if self.app.frames:
@@ -1381,7 +1411,7 @@ class CollageWindow:
         try:
             copy_image_to_clipboard(self.sheet())
         except Exception as ex:
-            messagebox.showerror(APP_NAME, f"Не удалось скопировать: {ex}", parent=self.win)
+            messagebox.showerror(APP_NAME, tr("Не удалось скопировать: {e}").format(e=ex), parent=self.win)
 
     def save(self, ask):
         if not self.app.frames:
@@ -1394,8 +1424,8 @@ class CollageWindow:
             if ask:
                 self.win.attributes("-topmost", False)
                 try:
-                    path = filedialog.asksaveasfilename(parent=self.win, title="Сохранить коллаж как",
-                                                        initialdir=folder, initialfile=f"Коллаж_{stamp}.png",
+                    path = filedialog.asksaveasfilename(parent=self.win, title=tr("Сохранить коллаж как"),
+                                                        initialdir=folder, initialfile=f"{tr('Коллаж')}_{stamp}.png",
                                                         defaultextension=".png",
                                                         filetypes=[("PNG", "*.png"), ("JPEG", "*.jpg *.jpeg")])
                 finally:
@@ -1405,10 +1435,10 @@ class CollageWindow:
                 st["last_dir"] = os.path.dirname(path)
             else:
                 os.makedirs(folder, exist_ok=True)
-                path = unique_path(folder, f"Коллаж_{stamp}")
+                path = unique_path(folder, f"{tr('Коллаж')}_{stamp}")
             save_image(img, path)
         except Exception as ex:
-            messagebox.showerror(APP_NAME, f"Не удалось сохранить: {ex}", parent=self.win)
+            messagebox.showerror(APP_NAME, tr("Не удалось сохранить: {e}").format(e=ex), parent=self.win)
             return
         self.app.frames.clear()          # после сохранения коллаж завершён: окно закрывается
         self.hide()
@@ -1604,7 +1634,7 @@ class Overlay:
         r1 = tk.Frame(tb, bg=BG)
         r1.pack(anchor="w", fill="x")
         self.ratio_btn = self._btn(r1, "ratio:free", lambda: self.open_popup(self.ratio_btn, self.build_ratios),
-                                   "Пропорции выделения  (клавиши 0–8)")
+                                   tr("Пропорции выделения  (клавиши 0–8)"))
         self.ratio_btn.pack(side="left", padx=1)
         self._sep(r1)
         r2 = self.r2 = tk.Frame(tb, bg=BG)
@@ -1613,51 +1643,51 @@ class Overlay:
             if tid in ("rect", "ellipse"):
                 continue                                    # фигуры — в выпадающем окошке
             parent = r1 if tid == "select" else r2          # инструменты рисования — в нижнем поле
-            b = self._btn(parent, tid, lambda t=tid: self.set_tool(t), tip)
+            b = self._btn(parent, tid, lambda t=tid: self.set_tool(t), tr(tip))
             b.pack(side="left", padx=1)
             self.tool_btns[tid] = b
         self.shape_kind = self.tool if self.tool in ("rect", "ellipse") else "rect"
         self.shape_btn = self._btn(r2, self.shape_kind, lambda: self.open_popup(self.shape_btn, self.build_shapes),
-                                   "Фигуры: прямоугольник (R) и круг (O)\nНажмите, чтобы выбрать")
+                                   tr("Фигуры: прямоугольник (R) и круг (O)\nНажмите, чтобы выбрать"))
         self.shape_btn.pack(side="left", padx=1)
         self._sep(r1)
-        self._btn(r1, "undo", self.do_undo, "Отменить  (Ctrl+Z)").pack(side="left", padx=1)
-        self._btn(r1, "redo", self.do_redo, "Повторить  (Ctrl+Y)").pack(side="left", padx=1)
+        self._btn(r1, "undo", self.do_undo, tr("Отменить  (Ctrl+Z)")).pack(side="left", padx=1)
+        self._btn(r1, "redo", self.do_redo, tr("Повторить  (Ctrl+Y)")).pack(side="left", padx=1)
         self._sep(r1)
         self.cursor_btn = self._btn(r1, "cursor", self.toggle_cursor,
-                                    "Показывать курсор мыши на снимке\n(вкл — курсор виден в итоговой картинке)")
+                                    tr("Показывать курсор мыши на снимке\n(вкл — курсор виден в итоговой картинке)"))
         self.cursor_btn.pack(side="left", padx=1)
         self.collage_btn = self._btn(r1, "collage_add", self.collage_click, "")
         self.collage_btn.pack(side="left", padx=1)
         self.snap_btn = self._btn(r1, "shot", self.live_snap,
-                                  "Снять кадр в рамке и добавить в коллаж  (PrtScn)\n"
-                                  "Экран не замораживается: можно смотреть видео и снимать подряд", bg=ACC)
+                                  tr("Снять кадр в рамке и добавить в коллаж  (PrtScn)\n"
+                                  "Экран не замораживается: можно смотреть видео и снимать подряд"), bg=ACC)
         self.snap_btn.pack(side="left", padx=1)
         self.snap_btn.set_enabled(False)
         self._sep(r1)
         self._btn(r1, "save", self.do_save,
-                  "Сохранить сразу в папку скриншотов и закрыть  (Ctrl+S)").pack(side="left", padx=1)
+                  tr("Сохранить сразу в папку скриншотов и закрыть  (Ctrl+S)")).pack(side="left", padx=1)
         self._btn(r1, "saveas", self.do_save_as,
-                  "Сохранить как… (выбрать папку и имя) и закрыть  (Ctrl+Shift+S)").pack(side="left", padx=1)
+                  tr("Сохранить как… (выбрать папку и имя) и закрыть  (Ctrl+Shift+S)")).pack(side="left", padx=1)
         self.fmt_btn = self._btn(r1, "quality", lambda: self.open_popup(self.fmt_btn, self.build_fmt), "")
         self.fmt_btn.pack(side="left", padx=1)
-        self._btn(r1, "close", self.close, "Закрыть  (Esc)").pack(side="left", padx=1)
+        self._btn(r1, "close", self.close, tr("Закрыть  (Esc)")).pack(side="left", padx=1)
         self._sep(r1)
         self.more_btn = self._btn(r1, "chev_d", self.toggle_bar2, "")
         self.more_btn.pack(side="left", padx=1)
 
         self._sep(r2)
         self.color_btn = self._btn(r2, "plus", lambda: self.open_popup(self.color_btn, self.build_colors),
-                                   "Цвет рисования")
+                                   tr("Цвет рисования"))
         self.color_btn.pack(side="left", padx=1)
         self._sep(r2)
         self.width_var = tk.IntVar(value=self.width)
-        self._slider(r2, "Толщина", "Толщина линии  (колесо мыши, [ и ])", 1, 40, self.width_var, self.set_width)
+        self._slider(r2, tr("Толщина"), tr("Толщина линии  (колесо мыши, [ и ])"), 1, 40, self.width_var, self.set_width)
         self._sep(r2)
         self.round_var = tk.IntVar(value=self.round)
-        self._slider(r2, "Скругление", "Скругление, %\n0 — линия как нарисована, 100 — максимальный изгиб:\n"
+        self._slider(r2, tr("Скругление"), tr("Скругление, %\n0 — линия как нарисована, 100 — максимальный изгиб:\n"
                                   "углы и кривые превращаются в ровные дуги\n"
-                                  "Для карандаша и прямоугольника  (S — вкл/выкл)",
+                                  "Для карандаша и прямоугольника  (S — вкл/выкл)"),
                      0, 100, self.round_var, self.set_round)
         self.bar2_on = bool(self.app.settings.get("bar2", False))
         if self.bar2_on:
@@ -1723,31 +1753,31 @@ class Overlay:
             except tk.TclError:
                 pass
         w = self._hk_win = tk.Toplevel(self.app.root)
-        w.title("Горячие клавиши")
+        w.title(tr("Горячие клавиши"))
         w.configure(bg=BG)
         w.attributes("-topmost", True)
         w.resizable(False, False)
         body = tk.Frame(w, bg=BG, padx=18, pady=14)
         body.pack()
         tk.Label(body, text=f"{APP_NAME}  v{VERSION}", bg=BG, fg=FG, font=("Segoe UI", 12, "bold")).pack(anchor="w")
-        tk.Label(body, text="Год создания: 2026", bg=BG, fg="#9aa3b2", font=("Segoe UI", 9)).pack(anchor="w")
+        tk.Label(body, text=tr("Год создания: 2026"), bg=BG, fg="#9aa3b2", font=("Segoe UI", 9)).pack(anchor="w")
         drow = tk.Frame(body, bg=BG)
         drow.pack(anchor="w")
-        tk.Label(drow, text="Разработчик: ", bg=BG, fg="#9aa3b2", font=("Segoe UI", 9)).pack(side="left")
+        tk.Label(drow, text=tr("Разработчик: ") + "Free software · ", bg=BG, fg="#9aa3b2", font=("Segoe UI", 9)).pack(side="left")
         lk = tk.Label(drow, text="GitHub", bg=BG, fg=ACC_H, cursor="hand2", font=("Segoe UI", 9, "underline"))
         lk.pack(side="left")
         lk.bind("<Button-1>", lambda e: self.open_repo())
         tk.Frame(body, height=1, bg=EDGE).pack(fill="x", pady=(8, 2))
         for title, rows in self.HOTKEYS:
-            tk.Label(body, text=title, bg=BG, fg=FG, font=("Segoe UI", 11, "bold")).pack(anchor="w", pady=(6, 3))
+            tk.Label(body, text=tr(title), bg=BG, fg=FG, font=("Segoe UI", 11, "bold")).pack(anchor="w", pady=(6, 3))
             g = tk.Frame(body, bg=BG)
             g.pack(anchor="w")
             for i, (k, d) in enumerate(rows):
-                tk.Label(g, text=k, bg=BG2, fg=FG, font=("Segoe UI", 9, "bold"), padx=8, pady=2,
-                         anchor="w", width=20).grid(row=i, column=0, sticky="we", padx=(0, 8), pady=1)
-                tk.Label(g, text=d, bg=BG, fg="#c9cfe8", font=("Segoe UI", 9), anchor="w").grid(
+                tk.Label(g, text=tr(k), bg=BG2, fg=FG, font=("Segoe UI", 9, "bold"), padx=8, pady=2,
+                         anchor="w", width=27).grid(row=i, column=0, sticky="we", padx=(0, 8), pady=1)
+                tk.Label(g, text=tr(d), bg=BG, fg="#c9cfe8", font=("Segoe UI", 9), anchor="w").grid(
                     row=i, column=1, sticky="w")
-        tk.Button(body, text="Закрыть", relief="flat", bd=0, bg=ACC, fg=FG, activebackground=ACC_H,
+        tk.Button(body, text=tr("Закрыть"), relief="flat", bd=0, bg=ACC, fg=FG, activebackground=ACC_H,
                   activeforeground=FG, font=("Segoe UI", 9), padx=16, pady=4, cursor="hand2",
                   command=w.destroy).pack(anchor="e", pady=(10, 0))
         w.bind("<Escape>", lambda e: w.destroy())
@@ -1793,13 +1823,13 @@ class Overlay:
                           command=lambda x=f: self.set_fmt(x))
             b.pack(side="left", padx=1)
             self._fmt_btns[f] = b
-        tk.Label(fr, text="Качество (JPG, WebP)", bg=BG, fg=FG, font=("Segoe UI", 9)).pack(anchor="w", pady=(6, 0))
+        tk.Label(fr, text=tr("Качество (JPG, WebP)"), bg=BG, fg=FG, font=("Segoe UI", 9)).pack(anchor="w", pady=(6, 0))
         self._q_var = tk.IntVar(value=int(st.get("quality", 90)))
         sc = tk.Scale(fr, from_=1, to=100, orient="horizontal", variable=self._q_var, length=210,
                       bg=BG, fg=FG, troughcolor=BG2, highlightthickness=0, bd=0, sliderlength=14,
                       font=("Segoe UI", 8), command=lambda v: self.set_quality(int(float(v))))
         sc.pack(anchor="w")
-        tk.Label(fr, text="PNG и BMP сохраняются без потерь;\nWebP при 100 — без потерь", bg=BG, fg="#9aa3b2",
+        tk.Label(fr, text=tr("PNG и BMP сохраняются без потерь;\nWebP при 100 — без потерь"), bg=BG, fg="#9aa3b2",
                  font=("Segoe UI", 8), justify="left").pack(anchor="w")
         drow = tk.Frame(fr, bg=BG)
         drow.pack(anchor="w", pady=(8, 0))
@@ -1813,22 +1843,45 @@ class Overlay:
         ds = FlatSlider(drow, 0, 90, self._d_var, self.set_dim, length=150)
         ds.pack(side="left")
         for w in (ic, ds, num):
-            self.tips.append(ToolTip(w, "Затемнение области вне рамки, %\n0 — без затемнения"))
+            self.tips.append(ToolTip(w, tr("Затемнение области вне рамки, %\n0 — без затемнения")))
         brow = tk.Frame(fr, bg=BG)
         brow.pack(anchor="w", pady=(8, 0))
         self._late_btn = self._btn(brow, "late", self.toggle_late, "")
         self._late_btn.pack(side="left", padx=(0, 4))
         self._late_refresh()
-        kb = self._btn(brow, "keys", self.open_hotkeys, "Горячие клавиши и о программе")
-        kb.pack(side="left")
+        kb = self._btn(brow, "keys", self.open_hotkeys, tr("Горячие клавиши и о программе"))
+        kb.pack(side="left", padx=(0, 4))
+        lm = tk.Menubutton(brow, text=LANGUAGES[LANG], relief="flat", bd=0, cursor="hand2", takefocus=0, bg=BG2,
+                           fg=FG, activebackground=BG3, activeforeground=FG, font=("Segoe UI", 9), padx=10, pady=6,
+                           indicatoron=False)
+        menu = tk.Menu(lm, tearoff=0, font=("Segoe UI", 10))
+        for code, name in LANGUAGES.items():
+            menu.add_command(label=name, command=lambda c=code: self.set_language(c))
+        lm.configure(menu=menu)
+        lm.pack(side="left", fill="y")
+        self.tips.append(ToolTip(lm, tr("Язык интерфейса")))
+
+    def set_language(self, code):
+        set_lang(code)
+        self.app.settings["lang"] = code
+        save_settings(self.app.settings)
+        try:
+            if self.app.icon is not None:
+                self.app.icon.title = f"{APP_NAME} v{VERSION} — PrtScn"
+                self.app.icon.update_menu()
+        except Exception:
+            pass
+        self.close_popup()
+        with self.topmost_off():
+            messagebox.showinfo(APP_NAME, tr("Язык изменён. Интерфейс обновится при следующем скриншоте."), parent=self.win)
 
     def _late_refresh(self):
         on = bool(self.app.settings.get("late_capture"))
         self._late_btn.configure(bg=ACC if on else BG2)
-        self._late_btn.tip.text = ("Снимок при сохранении: " + ("ВКЛ" if on else "ВЫКЛ") +
-                                   "\nВкл — после PrtScn экран не замораживается:\n"
+        self._late_btn.tip.text = (tr("Снимок при сохранении: ") + (tr("ВКЛ") if on else tr("ВЫКЛ")) +
+                                   tr("\nВкл — после PrtScn экран не замораживается:\n"
                                    "снимок делается в момент нажатия «Сохранить».\n"
-                                   "Действует со следующего нажатия PrtScn")
+                                   "Действует со следующего нажатия PrtScn"))
 
     def toggle_late(self):
         self.app.settings["late_capture"] = not self.app.settings.get("late_capture")
@@ -1879,7 +1932,7 @@ class Overlay:
         self._popup = (item, fr, btn)
 
     def build_shapes(self, fr):
-        for kind, tip in (("rect", "Прямоугольник  (R)\nShift — квадрат"), ("ellipse", "Круг / эллипс  (O)\nShift — ровный круг")):
+        for kind, tip in (("rect", tr("Прямоугольник  (R)\nShift — квадрат")), ("ellipse", tr("Круг / эллипс  (O)\nShift — ровный круг"))):
             b = self._btn(fr, kind, lambda k=kind: (self.close_popup(), self.set_tool(k)), tip,
                           bg=ACC if self.tool == kind else BG2)
             b.pack(side="top", pady=1)
@@ -1940,7 +1993,7 @@ class Overlay:
         # прозрачность рисования: 0 — сплошной цвет
         trow = tk.Frame(fr, bg=BG)
         trow.grid(row=rows + 2, column=0, columnspan=cols, pady=(8, 0), sticky="w")
-        tk.Label(trow, text="Прозрачность", bg=BG, fg="#9aa3d4", font=("Segoe UI", 8)).pack(anchor="w", padx=2)
+        tk.Label(trow, text=tr("Прозрачность"), bg=BG, fg="#9aa3d4", font=("Segoe UI", 8)).pack(anchor="w", padx=2)
         r2_ = tk.Frame(trow, bg=BG)
         r2_.pack(anchor="w")
         tv = self._t_var = tk.IntVar(value=100 - self.alpha)
@@ -1950,12 +2003,12 @@ class Overlay:
         num.configure(text=str(tv.get()))
         ts = FlatSlider(r2_, 0, 90, tv, lambda v: self.set_alpha(100 - v), length=pw - 30)
         ts.pack(side="left")
-        self.tips.append(ToolTip(ts, "Прозрачность рисования, %\n0 — сплошной цвет"))
+        self.tips.append(ToolTip(ts, tr("Прозрачность рисования, %\n0 — сплошной цвет")))
 
     def build_ratios(self, fr):
-        items = [(lab, ratio_icon_name(lab), "Свободно" if i == 0 else lab) for i, lab in enumerate(RATIOS)]
+        items = [(lab, ratio_icon_name(lab), tr("Свободно") if i == 0 else lab) for i, lab in enumerate(RATIOS)]
         custom = self.ratio_label not in RATIOS
-        items.append((None, "ratio:custom", self.ratio_label if custom else "Своё…"))
+        items.append((None, "ratio:custom", self.ratio_label if custom else tr("Своё…")))
         cols = 2
         for c in range(cols):
             fr.grid_columnconfigure(c, uniform="ratio", weight=1)
@@ -1968,7 +2021,7 @@ class Overlay:
                           padx=6, pady=2, command=cmd)
             b.grid(row=i // cols, column=i % cols, sticky="ew", padx=1, pady=1)
             if not lab:
-                self.tips.append(ToolTip(b, "Своё соотношение (21:9, 1.91:1)\nили точный размер в пикселях (1080x1350)"))
+                self.tips.append(ToolTip(b, tr("Своё соотношение (21:9, 1.91:1)\nили точный размер в пикселях (1080x1350)")))
 
     def swatch(self, col):
         """Квадратик цвета того же размера, что и значки кнопок."""
@@ -1992,26 +2045,26 @@ class Overlay:
         name = ratio_icon_name(self.ratio_label) if self.ratio_label in RATIOS else "ratio:custom"
         self.ratio_btn.set_icon(name)
         st = self.app.settings
-        self.fmt_btn.tip.text = (f"Настройки (формат, качество, затемнение, горячие клавиши): {st.get('fmt', 'PNG')}" +
-                                 (f", качество {st.get('quality', 90)}" if st.get("fmt") in ("JPG", "WEBP") else ""))
+        self.fmt_btn.tip.text = (tr("Настройки (формат, качество, затемнение, горячие клавиши)") + f": {st.get('fmt', 'PNG')}" +
+                                 (tr(", качество {q}").format(q=st.get('quality', 90)) if st.get("fmt") in ("JPG", "WEBP") else ""))
         self.more_btn.set_icon("chev_u" if self.bar2_on else "chev_d")
-        self.more_btn.tip.text = ("Скрыть инструменты рисования, цвет, толщину" if self.bar2_on
-                                  else "Показать инструменты рисования, цвет, толщину")
+        self.more_btn.tip.text = (tr("Скрыть инструменты рисования, цвет, толщину") if self.bar2_on
+                                  else tr("Показать инструменты рисования, цвет, толщину"))
         self.cursor_btn.configure(bg=ACC if self.show_cursor else BG2)
         n = len(self.app.frames)
         self.collage_btn.configure(bg=ACC if self.collage else BG2)
         self.snap_btn.set_enabled(self.collage)
-        self.snap_btn.tip.text = ("Снять кадр в рамке и добавить в коллаж  (PrtScn)\n"
-                                  "Экран не замораживается: можно смотреть видео и снимать подряд" if self.collage else
-                                  "Кадр коллажа — станет доступен после включения режима коллажа\n(кнопка слева)")
+        self.snap_btn.tip.text = (tr("Снять кадр в рамке и добавить в коллаж  (PrtScn)\n"
+                                  "Экран не замораживается: можно смотреть видео и снимать подряд") if self.collage else
+                                  tr("Кадр коллажа — станет доступен после включения режима коллажа\n(кнопка слева)"))
         if self.collage:
-            self.collage_btn.tip.text = (f"Режим коллажа включён (кадров: {n})\n"
-                                         "Нажмите, чтобы выйти — созданные кадры будут удалены")
+            self.collage_btn.tip.text = (tr("Режим коллажа включён (кадров: {n})").format(n=n) + "\n" +
+                                         tr("Нажмите, чтобы выйти — созданные кадры будут удалены"))
         else:
-            self.collage_btn.tip.text = ("Режим коллажа: экран оживает, кадры снимаются кнопкой кадра или PrtScn\n"
-                                         "Кадры собираются на одном листе с подписями «Скриншот 1, 2…»")
-        self.ratio_btn.tip.text = "Пропорции: " + ("свободные" if self.ratio is None else self.ratio_label) + \
-            "  (клавиши 0–8)"
+            self.collage_btn.tip.text = (tr("Режим коллажа: экран оживает, кадры снимаются кнопкой кадра или PrtScn\n"
+                                         "Кадры собираются на одном листе с подписями «Скриншот 1, 2…»"))
+        self.ratio_btn.tip.text = tr("Пропорции: ") + (tr("свободные") if self.ratio is None else tr(self.ratio_label)) + \
+            tr("  (клавиши 0–8)")
 
     @staticmethod
     def _contrast(col):
@@ -2042,7 +2095,7 @@ class Overlay:
     def pick_color(self):
         self.close_popup()
         with self.topmost_off():
-            res = colorchooser.askcolor(color=self.color, parent=self.win, title="Цвет рисования")
+            res = colorchooser.askcolor(color=self.color, parent=self.win, title=tr("Цвет рисования"))
         if res and res[1]:
             self.set_color(res[1])
 
@@ -2069,7 +2122,7 @@ class Overlay:
             r, fixed = parse_ratio(label)
         except (ValueError, ZeroDivisionError):
             with self.topmost_off():
-                messagebox.showwarning(APP_NAME, "Не понял формат. Примеры: 21:9, 1.91:1, 1080x1350",
+                messagebox.showwarning(APP_NAME, tr("Не понял формат. Примеры: 21:9, 1.91:1, 1080x1350"),
                                        parent=self.win)
             return
         self.ratio_label, self.ratio, self.fixed = label, r, fixed
@@ -2083,8 +2136,8 @@ class Overlay:
         self.close_popup()
         init = self.ratio_label if self.ratio_label not in RATIOS else ""
         with self.topmost_off():
-            v = simpledialog.askstring(APP_NAME, "Соотношение сторон (например 21:9 или 1.91:1)\n"
-                                                 "или точный размер в пикселях (например 1080x1350):",
+            v = simpledialog.askstring(APP_NAME, tr("Соотношение сторон (например 21:9 или 1.91:1)\n"
+                                                 "или точный размер в пикселях (например 1080x1350):"),
                                        initialvalue=init, parent=self.win)
         if v:
             self.set_ratio(v.strip())
@@ -2545,8 +2598,6 @@ class Overlay:
             bx1 = min(self.W, int(max(b[2] for b in bb)) + 1); by1 = min(self.H, int(max(b[3] for b in bb)) + 1)
             if bx1 > bx0 and by1 > by0:
                 lay = shapes_layer(self.shapes, bx0, by0, bx1 - bx0, by1 - by0, 2)
-                if self.live:
-                    lay = live_layer(lay)
                 self._shape_photo = ImageTk.PhotoImage(lay, master=self.win)
                 self.canvas.create_image(bx0, by0, anchor="nw", image=self._shape_photo, tags="shape")
         else:
@@ -2620,7 +2671,7 @@ class Overlay:
         c.create_rectangle(x0, y0, x1, y1, outline=BG, dash=(4, 3), width=1, tags="ui")     # тёмно-синий пунктир
         info = f"{x1 - x0} × {y1 - y0}"
         if self.ratio:
-            info += f"   {self.ratio_label}"
+            info += f"   {tr(self.ratio_label)}"
         if y0 > 26:
             self._label(x0 + 5, y0 - 5, info, "sw")
         else:
@@ -2690,7 +2741,7 @@ class Overlay:
             copy_image_to_clipboard(self.result(), hwnd)
         except Exception as ex:
             with self.topmost_off():
-                messagebox.showerror(APP_NAME, f"Не удалось скопировать: {ex}", parent=self.win)
+                messagebox.showerror(APP_NAME, tr("Не удалось скопировать: {e}").format(e=ex), parent=self.win)
             return
 
     def do_save(self):
@@ -2701,12 +2752,12 @@ class Overlay:
         folder = st.get("last_dir") or default_save_dir()
         try:
             os.makedirs(folder, exist_ok=True)
-            path = unique_path(folder, "Скриншот_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
+            path = unique_path(folder, tr("Скриншот") + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S"),
                                FMT_EXT.get(st.get("fmt"), ".png"))
             save_image(self.result(), path)
         except Exception as ex:
             with self.topmost_off():
-                messagebox.showerror(APP_NAME, f"Не удалось сохранить: {ex}", parent=self.win)
+                messagebox.showerror(APP_NAME, tr("Не удалось сохранить: {e}").format(e=ex), parent=self.win)
             return
         self.close()
 
@@ -2718,9 +2769,9 @@ class Overlay:
         st = self.app.settings
         d = st.get("last_dir") or default_save_dir()
         ext = FMT_EXT.get(st.get("fmt"), ".png")
-        name = "Скриншот_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ext
+        name = tr("Скриншот") + "_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ext
         with self.topmost_off():
-            path = filedialog.asksaveasfilename(parent=self.win, title="Сохранить скриншот как",
+            path = filedialog.asksaveasfilename(parent=self.win, title=tr("Сохранить скриншот как"),
                                                 initialdir=d, initialfile=name, defaultextension=ext,
                                                 filetypes=file_types(st.get("fmt", "PNG")))
         if not path:
@@ -2729,7 +2780,7 @@ class Overlay:
             save_image(img, path)
         except Exception as ex:
             with self.topmost_off():
-                messagebox.showerror(APP_NAME, f"Не удалось сохранить: {ex}", parent=self.win)
+                messagebox.showerror(APP_NAME, tr("Не удалось сохранить: {e}").format(e=ex), parent=self.win)
             return
         st["last_dir"] = os.path.dirname(path)
         self.close()
@@ -2998,28 +3049,28 @@ class Overlay:
         self.cp_canvas.pack()
         bar = tk.Frame(fr, bg=BG)
         bar.pack(fill="x", pady=(5, 0))
-        rb = self._menu_btn(bar, "ratio:custom", "Пропорции ячеек коллажа")
+        rb = self._menu_btn(bar, "ratio:custom", tr("Пропорции ячеек коллажа"))
         rb.pack(side="left", padx=1)
         m = tk.Menu(rb, tearoff=0, font=("Segoe UI", 10))
         for lab in COLLAGE_RATIOS:
-            m.add_command(label=("Авто (как первый кадр)" if lab == "Авто" else lab),
+            m.add_command(label=(tr("Авто (как первый кадр)") if lab == "Авто" else lab),
                           command=lambda l=lab: self.cp_set_ratio(l))
         m.add_separator()
-        m.add_command(label="Своё…", command=self.cp_custom_ratio)
+        m.add_command(label=tr("Своё…"), command=self.cp_custom_ratio)
         rb.configure(menu=m)
-        cb = self._menu_btn(bar, "grid", "Число колонок")
+        cb = self._menu_btn(bar, "grid", tr("Число колонок"))
         cb.pack(side="left", padx=1)
         m2 = tk.Menu(cb, tearoff=0, font=("Segoe UI", 10))
         for n in COLLAGE_COLS:
-            m2.add_command(label=("Колонок: авто" if n == 0 else f"Колонок: {n}"),
+            m2.add_command(label=(tr("Колонок: авто") if n == 0 else tr("Колонок: {n}").format(n=n)),
                            command=lambda v=n: self.cp_set_cols(v))
         cb.configure(menu=m2)
-        self._btn(bar, "undo", self.cp_remove_last, "Убрать последний кадр").pack(side="left", padx=1)
-        self._btn(bar, "trash", self.cp_clear, "Очистить коллаж").pack(side="left", padx=1)
+        self._btn(bar, "undo", self.cp_remove_last, tr("Убрать последний кадр")).pack(side="left", padx=1)
+        self._btn(bar, "trash", self.cp_clear, tr("Очистить коллаж")).pack(side="left", padx=1)
         self._btn(bar, "save", lambda: self.cp_save(False),
-                  "Сохранить коллаж и закрыть").pack(side="left", padx=1)
+                  tr("Сохранить коллаж и закрыть")).pack(side="left", padx=1)
         self._btn(bar, "saveas", lambda: self.cp_save(True),
-                  "Сохранить коллаж как… и закрыть").pack(side="left", padx=1)
+                  tr("Сохранить коллаж как… и закрыть")).pack(side="left", padx=1)
         self.cp_id = c.create_window(0, 0, anchor="nw", window=fr, state="hidden")
         self.cp_photo = None
 
@@ -3062,11 +3113,11 @@ class Overlay:
 
     def cp_custom_ratio(self):
         with self.topmost_off():
-            v = simpledialog.askstring(APP_NAME, "Пропорции ячейки (например 21:9 или 1.91:1):", parent=self.win)
+            v = simpledialog.askstring(APP_NAME, tr("Пропорции ячейки (например 21:9 или 1.91:1):"), parent=self.win)
         if v:
             if collage_ratio_tuple(v.strip()) is None:
                 with self.topmost_off():
-                    messagebox.showwarning(APP_NAME, "Не понял формат. Примеры: 21:9, 1.91:1", parent=self.win)
+                    messagebox.showwarning(APP_NAME, tr("Не понял формат. Примеры: 21:9, 1.91:1"), parent=self.win)
                 return
             self.cp_set_ratio(v.strip())
 
@@ -3099,7 +3150,7 @@ class Overlay:
             copy_image_to_clipboard(self.cp_sheet())
         except Exception as ex:
             with self.topmost_off():
-                messagebox.showerror(APP_NAME, f"Не удалось скопировать: {ex}", parent=self.win)
+                messagebox.showerror(APP_NAME, tr("Не удалось скопировать: {e}").format(e=ex), parent=self.win)
 
     def cp_save(self, ask):
         if not self.app.frames:
@@ -3110,7 +3161,7 @@ class Overlay:
                 path = save_collage_image(img, self.app.settings, ask, self.win)
         except Exception as ex:
             with self.topmost_off():
-                messagebox.showerror(APP_NAME, f"Не удалось сохранить: {ex}", parent=self.win)
+                messagebox.showerror(APP_NAME, tr("Не удалось сохранить: {e}").format(e=ex), parent=self.win)
             return
         if not path:
             return
@@ -3208,7 +3259,7 @@ class App:
                     try:
                         set_autostart(not autostart_enabled())
                     except Exception as ex:
-                        messagebox.showerror(APP_NAME, f"Не удалось изменить автозапуск: {ex}")
+                        messagebox.showerror(APP_NAME, tr("Не удалось изменить автозапуск: {e}").format(e=ex))
                     if self.icon:
                         self.icon.update_menu()
                 elif cmd == "esc":
@@ -3255,7 +3306,7 @@ class App:
             img, vx, vy, primary = grab_screen()
             cur = grab_cursor(vx, vy)
         except Exception as ex:
-            messagebox.showerror(APP_NAME, f"Не удалось снять экран: {ex}")
+            messagebox.showerror(APP_NAME, tr("Не удалось снять экран: {e}").format(e=ex))
             if self._collage_back and self.collage:
                 self.collage.show()
             self._collage_back = False
@@ -3293,19 +3344,19 @@ class App:
         except ImportError:
             return False
         menu = pystray.Menu(
-            pystray.MenuItem(f"{APP_NAME} v{VERSION}", None, enabled=False),
+            pystray.MenuItem(lambda it: f"{APP_NAME} v{VERSION}", None, enabled=False),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("Сделать скриншот (PrtScn)", lambda i, it: self.request_shot(300), default=True),
-            pystray.MenuItem(lambda it: f"Коллаж: кадров {len(self.frames)}…",
+            pystray.MenuItem(lambda it: tr("Сделать скриншот (PrtScn)"), lambda i, it: self.request_shot(300), default=True),
+            pystray.MenuItem(lambda it: tr("Коллаж: кадров {n}…").format(n=len(self.frames)),
                              lambda i, it: self.q.put(("collage", 0)),
                              enabled=lambda it: len(self.frames) > 0),
-            pystray.MenuItem("Очистить коллаж", lambda i, it: self.q.put(("collage_clear", 0)),
+            pystray.MenuItem(lambda it: tr("Очистить коллаж"), lambda i, it: self.q.put(("collage_clear", 0)),
                              enabled=lambda it: len(self.frames) > 0),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("Запускать вместе с Windows", lambda i, it: self.q.put(("autostart", 0)),
+            pystray.MenuItem(lambda it: tr("Запускать вместе с Windows"), lambda i, it: self.q.put(("autostart", 0)),
                              checked=lambda it: autostart_enabled()),
             pystray.Menu.SEPARATOR,
-            pystray.MenuItem("Выход", lambda i, it: self.q.put(("quit", 0))),
+            pystray.MenuItem(lambda it: tr("Выход"), lambda i, it: self.q.put(("quit", 0))),
         )
         self.icon = pystray.Icon(APP_ID, make_tray_icon(), f"{APP_NAME} v{VERSION} — PrtScn", menu)
         self.icon.run_detached()
