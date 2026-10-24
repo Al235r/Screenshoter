@@ -28,7 +28,7 @@ from PIL import Image, ImageTk, ImageDraw, ImageGrab, ImageEnhance, ImageChops, 
 IS_WIN = sys.platform.startswith("win")
 APP_NAME = "Скриншотер"
 APP_ID = "Screenshoter"
-VERSION = "5.1"
+VERSION = "5.2"
 
 # ----------------------------------------------------------------- оформление
 BG = "#191c38"        # панель
@@ -235,7 +235,7 @@ def paste_cursor(img, cur):
     return out
 
 
-def copy_image_to_clipboard(img):
+def copy_image_to_clipboard(img, hwnd=None):
     """Кладёт картинку в буфер обмена Windows (форматы DIB и PNG)."""
     if not IS_WIN:
         raise OSError("Копирование в буфер обмена реализовано только для Windows")
@@ -256,6 +256,8 @@ def copy_image_to_clipboard(img):
     u.SetClipboardData.argtypes = [ctypes.c_uint, ctypes.c_void_p]
     u.SetClipboardData.restype = ctypes.c_void_p
     u.OpenClipboard.argtypes = [ctypes.c_void_p]
+    u.EmptyClipboard.restype = ctypes.c_int
+    k.GlobalFree.argtypes = [ctypes.c_void_p]
     u.RegisterClipboardFormatW.argtypes = [ctypes.c_wchar_p]
     GMEM_MOVEABLE = 0x0002
     CF_DIB = 8
@@ -266,23 +268,29 @@ def copy_image_to_clipboard(img):
         ctypes.memmove(p, data, len(data))
         k.GlobalUnlock(h)
         if not u.SetClipboardData(fmt, h):
-            raise OSError("SetClipboardData не сработал")
+            k.GlobalFree(h)
+            raise OSError("не удалось положить данные в буфер обмена")
 
-    for _ in range(20):
-        if u.OpenClipboard(None):
-            break
-        time.sleep(0.05)
-    else:
-        raise OSError("Буфер обмена занят другой программой")
-    try:
-        u.EmptyClipboard()
-        put(CF_DIB, dib)
+    last = None
+    for attempt in range(8):                            # буфер бывает занят другой программой — пробуем снова
+        if not u.OpenClipboard(hwnd):
+            last = OSError("Буфер обмена занят другой программой")
+            time.sleep(0.08)
+            continue
         try:
-            put(u.RegisterClipboardFormatW("PNG"), png)
-        except Exception:
-            pass
-    finally:
-        u.CloseClipboard()
+            u.EmptyClipboard()
+            put(CF_DIB, dib)
+            try:
+                put(u.RegisterClipboardFormatW("PNG"), png)
+            except Exception:
+                pass
+            return
+        except OSError as ex:
+            last = ex
+        finally:
+            u.CloseClipboard()
+        time.sleep(0.08)
+    raise last or OSError("Буфер обмена недоступен")
 
 
 def force_foreground(win):
@@ -617,7 +625,7 @@ def pil_stroke(d, pts, w, col, rounded):
         return
     if rounded:
         d.line(pts, fill=col, width=max(1, int(round(w))), joint="curve")
-        for x, y in (pts[0], pts[-1]):
+        for x, y in pts:                      # круг в каждой вершине: без «щербинок» на стыках сегментов
             d.ellipse([x - hw, y - hw, x + hw, y + hw], fill=col)
         return
     # без скругления: прямые сегменты, квадратные концы, скошенные стыки
@@ -634,12 +642,12 @@ def pil_stroke(d, pts, w, col, rounded):
             b = (b[0] + ux * hw, b[1] + uy * hw)
         nx, ny = -uy * hw, ux * hw
         d.polygon([(a[0] + nx, a[1] + ny), (b[0] + nx, b[1] + ny),
-                   (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)], fill=col)
+                   (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)], fill=col, outline=col)
     for i in range(1, n - 1):
         v = pts[i]
         (n1x, n1y), (n2x, n2y) = normals[i - 1], normals[i]
-        d.polygon([v, (v[0] + n1x, v[1] + n1y), (v[0] + n2x, v[1] + n2y)], fill=col)
-        d.polygon([v, (v[0] - n1x, v[1] - n1y), (v[0] - n2x, v[1] - n2y)], fill=col)
+        d.polygon([v, (v[0] + n1x, v[1] + n1y), (v[0] + n2x, v[1] + n2y)], fill=col, outline=col)
+        d.polygon([v, (v[0] - n1x, v[1] - n1y), (v[0] - n2x, v[1] - n2y)], fill=col, outline=col)
 
 
 def pil_draw_shape(d, sh, ox, oy, S):
@@ -677,6 +685,21 @@ def pil_draw_shape(d, sh, ox, oy, S):
         hw = w / 2
         d.rectangle([round(x0 - hw), round(y0 - hw), round(x1 + hw), round(y1 + hw)],
                     outline=col, width=max(1, int(round(w))))
+
+
+def live_layer(lay):
+    """В живом режиме окно прозрачно по «ключевому цвету»: полупрозрачные пиксели смешались бы с ним и дали тёмную
+    кайму. Поэтому показываем жёсткую маску, а прозрачность передаём осветлением цвета."""
+    a = lay.getchannel("A")
+    amax = a.getextrema()[1]
+    if amax <= 0:
+        return lay
+    thr = max(1, amax // 2)
+    mask = a.point(lambda v, t=thr: 255 if v >= t else 0)
+    k = amax / 255.0
+    rgb = lay.convert("RGB").point(lambda v, k=k: int(v * k + 255 * (1 - k)))
+    rgb.putalpha(mask)
+    return rgb
 
 
 def shapes_layer(shapes, ox, oy, w, h, S=3):
@@ -1416,8 +1439,7 @@ class Overlay:
         self.img_cur = paste_cursor(img, cursor)
         self.show_cursor = bool(s.get("cursor", True)) and cursor is not None
         self.img = self.img_cur if self.show_cursor else self.img_clean
-        self.tool = s.get("tool") if s.get("tool") in TOOL_IDS and s.get("tool") != "select" else "pen"
-        self.prev_tool = self.tool
+        self.tool = None                      # при открытии ни один инструмент не включён: рисовать нельзя, пока не выбран
         self.color = s.get("color", "#ff2d2d")
         self.width = int(s.get("width", 4))
         self.alpha = max(10, min(100, int(s.get("alpha", 100))))
@@ -1708,8 +1730,13 @@ class Overlay:
         body = tk.Frame(w, bg=BG, padx=18, pady=14)
         body.pack()
         tk.Label(body, text=f"{APP_NAME}  v{VERSION}", bg=BG, fg=FG, font=("Segoe UI", 12, "bold")).pack(anchor="w")
-        for line in ("Год создания: 2026", "Разработчик: Free software (свободное ПО)"):
-            tk.Label(body, text=line, bg=BG, fg="#9aa3b2", font=("Segoe UI", 9)).pack(anchor="w")
+        tk.Label(body, text="Год создания: 2026", bg=BG, fg="#9aa3b2", font=("Segoe UI", 9)).pack(anchor="w")
+        drow = tk.Frame(body, bg=BG)
+        drow.pack(anchor="w")
+        tk.Label(drow, text="Разработчик: ", bg=BG, fg="#9aa3b2", font=("Segoe UI", 9)).pack(side="left")
+        lk = tk.Label(drow, text="GitHub", bg=BG, fg=ACC_H, cursor="hand2", font=("Segoe UI", 9, "underline"))
+        lk.pack(side="left")
+        lk.bind("<Button-1>", lambda e: self.open_repo())
         tk.Frame(body, height=1, bg=EDGE).pack(fill="x", pady=(8, 2))
         for title, rows in self.HOTKEYS:
             tk.Label(body, text=title, bg=BG, fg=FG, font=("Segoe UI", 11, "bold")).pack(anchor="w", pady=(6, 3))
@@ -1729,6 +1756,30 @@ class Overlay:
         y = self.vy + (self.H - w.winfo_height()) // 2
         w.geometry(f"+{max(0, x)}+{max(0, y)}")
         w.focus_force()
+
+    REPO_URL = "https://github.com/Al235r/Screenshoter"
+
+    def open_repo(self):
+        """Открыть страницу проекта: окна редактора на время уходят из-под «поверх всех окон», иначе браузер не виден."""
+        wins = [w for w in (self.win, self.dim, self.catch, getattr(self, "_hk_win", None)) if w is not None]
+        for w in wins:
+            try:
+                w.attributes("-topmost", False)
+            except tk.TclError:
+                pass
+        try:
+            import webbrowser
+            webbrowser.open(self.REPO_URL)
+        except Exception:
+            pass
+
+        def back():
+            for w in wins:
+                try:
+                    w.attributes("-topmost", True)
+                except tk.TclError:
+                    pass
+        self.win.after(6000, back)
 
     def build_fmt(self, fr):
         st = self.app.settings
@@ -1972,10 +2023,8 @@ class Overlay:
 
     # ------------------------------------------------------------ состояние
     def set_tool(self, t):
-        if t == "select" and self.tool == "select":      # повторное нажатие отжимает «перемещение»
-            t = self.prev_tool
-        if self.tool != "select":
-            self.prev_tool = self.tool
+        if t == self.tool:                               # повторное нажатие отжимает инструмент
+            t = None
         self.tool = t
         if t in ("rect", "ellipse"):
             self.shape_kind = t
@@ -2177,7 +2226,7 @@ class Overlay:
             if h:
                 self.drag = {"kind": "resize", "h": h, "orig": self.sel}
                 return
-            if self.tool == "select" or not self.sel or not self.in_sel(x, y):
+            if self.tool in (None, "select") or not self.sel or not self.in_sel(x, y):
                 return
         if self.sel is None or (not self.in_sel(x, y) and not self.hit_sel_handle(x, y)
                                 and not self.hit_curve_handle(x, y)):
@@ -2194,6 +2243,8 @@ class Overlay:
             return
         if self.tool == "select":
             self.drag = {"kind": "move", "sx": x, "sy": y, "orig": self.sel}
+            return
+        if self.tool is None:                            # инструмент не выбран — внутри рамки ничего не рисуется
             return
         p = self.clamp_to_sel(x, y)
         base = {"color": self.color, "w": self.width, "alpha": self.alpha}
@@ -2494,6 +2545,8 @@ class Overlay:
             bx1 = min(self.W, int(max(b[2] for b in bb)) + 1); by1 = min(self.H, int(max(b[3] for b in bb)) + 1)
             if bx1 > bx0 and by1 > by0:
                 lay = shapes_layer(self.shapes, bx0, by0, bx1 - bx0, by1 - by0, 2)
+                if self.live:
+                    lay = live_layer(lay)
                 self._shape_photo = ImageTk.PhotoImage(lay, master=self.win)
                 self.canvas.create_image(bx0, by0, anchor="nw", image=self._shape_photo, tags="shape")
         else:
@@ -2631,7 +2684,10 @@ class Overlay:
         if not self.sel:
             return
         try:
-            copy_image_to_clipboard(self.result())
+            hwnd = None
+            if IS_WIN:
+                hwnd = ctypes.windll.user32.GetAncestor(self.win.winfo_id(), 2)
+            copy_image_to_clipboard(self.result(), hwnd)
         except Exception as ex:
             with self.topmost_off():
                 messagebox.showerror(APP_NAME, f"Не удалось скопировать: {ex}", parent=self.win)
@@ -2814,11 +2870,11 @@ class Overlay:
         if not self.live:
             want, region = False, None
         elif self.collage:
-            want = self.sel is not None and self.tool != "select"
+            want = self.sel is not None and self.tool not in (None, "select")
             region = tuple(int(v) for v in self.sel) if self.sel else None
         else:                                                # «снимок при сохранении»: можно выделять и двигать рамку
             want = True
-            region = None if (self.sel is None or self.tool == "select") else tuple(int(v) for v in self.sel)
+            region = None if (self.sel is None or self.tool in (None, "select")) else tuple(int(v) for v in self.sel)
         key = (region, want)
         if getattr(self, "catch", None) is not None and key == self._catch_key:
             return
