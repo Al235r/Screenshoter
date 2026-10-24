@@ -401,14 +401,14 @@ TRANSLATIONS = {
         "zh": "关闭",
         "ja": "閉じる",
     },
-    "Качество (JPG, WebP)": {
-        "en": "Quality (JPG, WebP)",
-        "es": "Calidad (JPG, WebP)",
-        "de": "Qualität (JPG, WebP)",
-        "fr": "Qualité (JPG, WebP)",
-        "pt": "Qualidade (JPG, WebP)",
-        "zh": "质量 (JPG, WebP)",
-        "ja": "画質 (JPG, WebP)",
+        "Качество изображения": {
+        "en": "Image quality",
+        "es": "Calidad de imagen",
+        "de": "Bildqualität",
+        "fr": "Qualité de l'image",
+        "pt": "Qualidade da imagem",
+        "zh": "图像质量",
+        "ja": "画質",
     },
     "PNG и BMP сохраняются без потерь;\nWebP при 100 — без потерь": {
         "en": "PNG and BMP are saved losslessly;\nWebP at 100 is lossless",

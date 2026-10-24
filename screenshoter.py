@@ -71,7 +71,7 @@ def set_lang(code):
 
 
 APP_ID = "Screenshoter"
-VERSION = "5.3"
+VERSION = "5.4"
 
 # ----------------------------------------------------------------- оформление
 BG = "#191c38"        # панель
@@ -1459,6 +1459,8 @@ class Overlay:
         self.vx, self.vy = vx, vy
         self.dim = None
         self.dim_hwnd = None
+        self.shp = None
+        self.shp_hwnd = None
         self.catch = None
         self.catch_hwnd = None
         self._catch_key = None
@@ -1581,6 +1583,7 @@ class Overlay:
                   round=self.round, ratio=self.ratio_label, cursor=self.show_cursor or
                   (self.cursor is None and st.get("cursor", True)))
         self._kill_catch()
+        self._kill_shapes_win()
         self._kill_dim()
         try:
             self.win.destroy()
@@ -1823,12 +1826,16 @@ class Overlay:
                           command=lambda x=f: self.set_fmt(x))
             b.pack(side="left", padx=1)
             self._fmt_btns[f] = b
-        tk.Label(fr, text=tr("Качество (JPG, WebP)"), bg=BG, fg=FG, font=("Segoe UI", 9)).pack(anchor="w", pady=(6, 0))
+        tk.Label(fr, text=tr("Качество изображения"), bg=BG, fg=FG, font=("Segoe UI", 9)).pack(anchor="w", pady=(6, 0))
+        qrow = tk.Frame(fr, bg=BG)
+        qrow.pack(anchor="w", pady=(2, 0))
         self._q_var = tk.IntVar(value=int(st.get("quality", 90)))
-        sc = tk.Scale(fr, from_=1, to=100, orient="horizontal", variable=self._q_var, length=210,
-                      bg=BG, fg=FG, troughcolor=BG2, highlightthickness=0, bd=0, sliderlength=14,
-                      font=("Segoe UI", 8), command=lambda v: self.set_quality(int(float(v))))
-        sc.pack(anchor="w")
+        qnum = tk.Label(qrow, width=3, anchor="e", bg=BG, fg=FG, font=("Segoe UI", 9, "bold"))
+        qnum.pack(side="left")
+        self._q_var.trace_add("write", lambda *a: qnum.configure(text=str(self._q_var.get())))
+        qnum.configure(text=str(self._q_var.get()))
+        qs = FlatSlider(qrow, 1, 100, self._q_var, lambda v: self.set_quality(int(float(v))), length=200)
+        qs.pack(side="left", padx=(4, 0))
         tk.Label(fr, text=tr("PNG и BMP сохраняются без потерь;\nWebP при 100 — без потерь"), bg=BG, fg="#9aa3b2",
                  font=("Segoe UI", 8), justify="left").pack(anchor="w")
         drow = tk.Frame(fr, bg=BG)
@@ -2598,9 +2605,12 @@ class Overlay:
             bx1 = min(self.W, int(max(b[2] for b in bb)) + 1); by1 = min(self.H, int(max(b[3] for b in bb)) + 1)
             if bx1 > bx0 and by1 > by0:
                 lay = shapes_layer(self.shapes, bx0, by0, bx1 - bx0, by1 - by0, 2)
-                self._shape_photo = ImageTk.PhotoImage(lay, master=self.win)
-                self.canvas.create_image(bx0, by0, anchor="nw", image=self._shape_photo, tags="shape")
+                if not (self.live and self.affinity and self._show_shapes_win(lay, bx0, by0)):
+                    self._kill_shapes_win()
+                    self._shape_photo = ImageTk.PhotoImage(lay, master=self.win)
+                    self.canvas.create_image(bx0, by0, anchor="nw", image=self._shape_photo, tags="shape")
         else:
+            self._kill_shapes_win()
             for sh in self.shapes:
                 self.draw_shape_tk(sh, "shape")
         self._order()
@@ -2892,6 +2902,92 @@ class Overlay:
         except Exception:
             pass
 
+    def _show_shapes_win(self, lay, bx0, by0):
+        """Живой режим: окно редактора прозрачно по «ключевому цвету», а он не умеет полупрозрачность.
+        Полупрозрачные фигуры показываем отдельным окном с настоящей попиксельной прозрачностью
+        (оно под панелью, пропускает клики и не попадает в снимки)."""
+        try:
+            u, g = ctypes.windll.user32, ctypes.windll.gdi32
+            if self.shp is None:
+                d = self.shp = tk.Toplevel(self.app.root)
+                d.withdraw()
+                d.overrideredirect(True)
+                d.geometry(f"1x1+{self.vx}+{self.vy}")
+                d.attributes("-topmost", True)
+                d.update_idletasks()
+                h = self.shp_hwnd = u.GetAncestor(d.winfo_id(), 2)
+                u.SetWindowLongW(h, -20, u.GetWindowLongW(h, -20) | 0x80000 | 0x20 | 0x80 | 0x08000000)
+                u.SetWindowDisplayAffinity(h, 0x11)
+                d.deiconify()
+                d.update()
+                main = u.GetAncestor(self.win.winfo_id(), 2)
+                u.SetWindowPos(h, main, 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010 | 0x0040)   # сразу под окном редактора
+            w, h_ = lay.size
+            r, gg, b, a = lay.convert("RGBa").split()                       # предумноженная прозрачность
+            data = Image.merge("RGBA", (b, gg, r, a)).tobytes()
+            from ctypes import wintypes
+
+            class BIH(ctypes.Structure):
+                _fields_ = [("biSize", wintypes.DWORD), ("biWidth", wintypes.LONG), ("biHeight", wintypes.LONG),
+                            ("biPlanes", wintypes.WORD), ("biBitCount", wintypes.WORD),
+                            ("biCompression", wintypes.DWORD), ("biSizeImage", wintypes.DWORD),
+                            ("biX", wintypes.LONG), ("biY", wintypes.LONG), ("biUsed", wintypes.DWORD),
+                            ("biImp", wintypes.DWORD)]
+
+            class BF(ctypes.Structure):
+                _fields_ = [("Op", ctypes.c_ubyte), ("Fl", ctypes.c_ubyte), ("Sca", ctypes.c_ubyte),
+                            ("Fmt", ctypes.c_ubyte)]
+            g.CreateDIBSection.restype = ctypes.c_void_p
+            g.CreateDIBSection.argtypes = [ctypes.c_void_p, ctypes.c_void_p, wintypes.UINT,
+                                           ctypes.POINTER(ctypes.c_void_p), ctypes.c_void_p, wintypes.DWORD]
+            g.CreateCompatibleDC.restype = ctypes.c_void_p
+            g.CreateCompatibleDC.argtypes = [ctypes.c_void_p]
+            g.SelectObject.restype = ctypes.c_void_p
+            g.SelectObject.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+            g.DeleteObject.argtypes = [ctypes.c_void_p]
+            g.DeleteDC.argtypes = [ctypes.c_void_p]
+            u.GetDC.restype = ctypes.c_void_p
+            u.GetDC.argtypes = [ctypes.c_void_p]
+            u.ReleaseDC.argtypes = [ctypes.c_void_p, ctypes.c_void_p]
+            u.UpdateLayeredWindow.argtypes = [ctypes.c_void_p, ctypes.c_void_p, ctypes.POINTER(wintypes.POINT),
+                                              ctypes.POINTER(wintypes.SIZE), ctypes.c_void_p,
+                                              ctypes.POINTER(wintypes.POINT), wintypes.COLORREF,
+                                              ctypes.POINTER(BF), wintypes.DWORD]
+            hdc = u.GetDC(None)
+            mem = g.CreateCompatibleDC(hdc)
+            bih = BIH(40, w, -h_, 1, 32, 0, 0, 0, 0, 0, 0)
+            bits = ctypes.c_void_p()
+            bmp = g.CreateDIBSection(hdc, ctypes.byref(bih), 0, ctypes.byref(bits), None, 0)
+            ok = False
+            if bmp and bits.value:
+                ctypes.memmove(bits.value, data, len(data))
+                old = g.SelectObject(mem, bmp)
+                dst = wintypes.POINT(self.vx + bx0, self.vy + by0)
+                size = wintypes.SIZE(w, h_)
+                src = wintypes.POINT(0, 0)
+                ok = bool(u.UpdateLayeredWindow(self.shp_hwnd, hdc, ctypes.byref(dst), ctypes.byref(size), mem,
+                                                ctypes.byref(src), 0, ctypes.byref(BF(0, 0, 255, 1)), 2))
+                g.SelectObject(mem, old)
+            if bmp:
+                g.DeleteObject(bmp)
+            g.DeleteDC(mem)
+            u.ReleaseDC(None, hdc)
+            if not ok:
+                self._kill_shapes_win()
+            return ok
+        except Exception:
+            self._kill_shapes_win()
+            return False
+
+    def _kill_shapes_win(self):
+        if self.shp is not None:
+            try:
+                self.shp.destroy()
+            except tk.TclError:
+                pass
+        self.shp = None
+        self.shp_hwnd = None
+
     def _make_catch(self):
         """Почти невидимое окно над рамкой ловит мышь, пока выбран инструмент рисования
         (сам режим коллажа пропускает клики сквозь рамку)."""
@@ -3001,6 +3097,7 @@ class Overlay:
             c.itemconfigure("bg", state="normal")
             c.itemconfigure("shape", state="normal")
             self.win.update_idletasks()
+            self._kill_shapes_win()
             self._kill_dim()                                # затемнение убираем, когда снимок уже на месте
 
     def live_snap(self):
