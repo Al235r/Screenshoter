@@ -104,7 +104,7 @@ def set_lang(code):
 
 
 APP_ID = "Screenshoter"
-VERSION = "5.6"
+VERSION = "5.7"
 
 # ----------------------------------------------------------------- оформление
 BG = "#191c38"        # панель
@@ -138,7 +138,7 @@ PALETTE = ["#ff2d2d", "#ff8a00", "#ffd400", "#22c55e", "#1e90ff",
 DEFAULTS = {"tool": "pen", "color": "#ff2d2d", "width": 4,
             "ratio": "Свободно", "last_dir": "", "cursor": True,
             "collage_ratio": "Авто", "collage_cols": 0,
-            "fmt": "PNG", "quality": 90, "dim": 50, "alpha": 100, "late_capture": True, "bar2": False, "sel": None, "sel_wh": None}
+            "fmt": "PNG", "quality": 90, "dim": 50, "alpha": 100, "late_capture": True, "close_after": True, "bar2": False, "sel": None, "sel_wh": None}
 
 FORMATS = ["PNG", "JPG", "WEBP", "BMP"]
 FMT_EXT = {"PNG": ".png", "JPG": ".jpg", "WEBP": ".webp", "BMP": ".bmp"}
@@ -910,6 +910,9 @@ def make_icon(name, px=ICON_PX):
     elif name == "late":
         circ = [(12 + 9 * math.cos(2 * math.pi * i / 40), 12 + 9 * math.sin(2 * math.pi * i / 40)) for i in range(41)]
         line(circ, 1.6 * k); line([(12, 6.5), (12, 12), (16, 14.5)], 1.7 * k)
+    elif name == "autoclose":
+        line([(11, 4), (4, 4), (4, 20), (11, 20)], 1.7 * k); line([(9, 12), (18, 12)], 1.8 * k)
+        poly([(22, 12), (16, 7.5), (16, 16.5)])
     elif name == "chev_d":
         line([(5, 9), (12, 16), (19, 9)], 2.2 * k)
     elif name == "chev_u":
@@ -1891,6 +1894,9 @@ class Overlay:
         self._late_btn = self._btn(brow, "late", self.toggle_late, "")
         self._late_btn.pack(side="left", padx=(0, 4))
         self._late_refresh()
+        self._ac_btn = self._btn(brow, "autoclose", self.toggle_autoclose, "")
+        self._ac_btn.pack(side="left", padx=(0, 4))
+        self._ac_refresh()
         kb = self._btn(brow, "keys", self.open_hotkeys, tr("Горячие клавиши и о программе"))
         kb.pack(side="left", padx=(0, 4))
         lm = tk.Menubutton(brow, text=LANGUAGES[LANG], relief="flat", bd=0, cursor="hand2", takefocus=0, bg=BG2,
@@ -1924,6 +1930,32 @@ class Overlay:
                                    tr("\nВкл — после PrtScn экран не замораживается:\n"
                                    "снимок делается в момент нажатия «Сохранить».\n"
                                    "Действует со следующего нажатия PrtScn"))
+
+    def _ac_refresh(self):
+        on = bool(self.app.settings.get("close_after", True))
+        self._ac_btn.configure(bg=ACC if on else BG2)
+        self._ac_btn.tip.text = (tr("Закрывать после сохранения: ") + (tr("ВКЛ") if on else tr("ВЫКЛ")) +
+                                 tr("\nВкл — после «Сохранить» редактор закрывается.\n"
+                                    "Выкл — остаётся открытым, закрыть можно только крестиком (Esc)."))
+
+    def toggle_autoclose(self):
+        self.app.settings["close_after"] = not self.app.settings.get("close_after", True)
+        self._ac_refresh()
+        save_settings(self.app.settings)
+
+    def _saved(self, path):
+        """Сохранено, а редактор остаётся открытым: короткое подтверждение на экране."""
+        if self.app.settings.get("close_after", True):
+            self.close()
+            return
+        try:
+            px0, py0, px1, py1 = self.primary
+            lb = tk.Label(self.canvas, text=tr("Сохранено: {name}").format(name=os.path.basename(path)),
+                          bg=ACC, fg="#ffffff", font=("Segoe UI", 11, "bold"), padx=14, pady=8)
+            wid = self.canvas.create_window((px0 + px1) // 2, py0 + 40, window=lb, anchor="n")
+            self.win.after(1800, lambda: (self.canvas.delete(wid), lb.destroy()))
+        except tk.TclError:
+            pass
 
     def toggle_late(self):
         self.app.settings["late_capture"] = not self.app.settings.get("late_capture")
@@ -2804,7 +2836,7 @@ class Overlay:
             with self.topmost_off():
                 messagebox.showerror(APP_NAME, tr("Не удалось сохранить: {e}").format(e=ex), parent=self.win)
             return
-        self.close()
+        self._saved(path)
 
     def do_save_as(self):
         """Выбрать папку и имя, сохранить и закрыть."""
@@ -2828,7 +2860,7 @@ class Overlay:
                 messagebox.showerror(APP_NAME, tr("Не удалось сохранить: {e}").format(e=ex), parent=self.win)
             return
         st["last_dir"] = os.path.dirname(path)
-        self.close()
+        self._saved(path)
 
     def collage_click(self):
         """Включить/выключить режим коллажа. Включение кадр не снимает; выход удаляет все кадры коллажа."""
